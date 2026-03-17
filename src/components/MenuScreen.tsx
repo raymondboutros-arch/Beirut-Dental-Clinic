@@ -34,7 +34,7 @@ export function MenuScreen({ onNavigate }: MenuScreenProps) {
           <h1 className="font-medium text-[19px] text-[#1C1C1C] mb-5">Menu</h1>
 
           {/* Profile Card */}
-          <div className="bg-[#F0F3F5] rounded-[16px] p-4 flex items-center gap-4">
+          <button onClick={() => onNavigate('profile')} className="w-full bg-[#F0F3F5] rounded-[16px] p-4 flex items-center gap-4 text-left hover:bg-[#E8EBEE] transition-colors">
             <Avatar className="w-14 h-14">
               <AvatarFallback className="bg-[#1E6E97] text-white text-lg">
                 DR
@@ -46,7 +46,7 @@ export function MenuScreen({ onNavigate }: MenuScreenProps) {
               <p className="text-xs text-[#8AA4B1] mt-0.5">Beirut Dental Clinic</p>
             </div>
             <ChevronRight className="w-5 h-5 text-[#8AA4B1]" />
-          </div>
+          </button>
         </div>
       </div>
 

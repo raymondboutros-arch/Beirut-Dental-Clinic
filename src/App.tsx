@@ -9,12 +9,13 @@ import { ToothDetailPage } from './components/ToothDetailPage';
 import { SearchScreen } from './components/SearchScreen';
 import { NotificationsScreen } from './components/NotificationsScreen';
 import { MenuScreen } from './components/MenuScreen';
+import { ProfileScreen } from './components/ProfileScreen';
 import { BottomNavigation } from './components/BottomNavigation';
 import { toast } from 'sonner@2.0.3';
 import { Toaster } from './components/ui/sonner';
 
 type ActiveTab = 'home' | 'search' | 'notifications' | 'menu';
-type Screen = 'home' | 'service-selection' | 'staff-selection' | 'datetime-selection' | 'review-pay' | 'dashboard';
+type Screen = 'home' | 'service-selection' | 'staff-selection' | 'datetime-selection' | 'review-pay' | 'dashboard' | 'profile';
 
 interface CompositeToothData {
   id: string;
@@ -433,12 +434,21 @@ export default function App() {
     if (activeTab === 'search') return <SearchScreen />;
     if (activeTab === 'notifications') return <NotificationsScreen />;
     if (activeTab === 'menu') {
+      if (currentScreen === 'profile') {
+        return (
+          <ProfileScreen
+            onBack={() => setCurrentScreen('home')}
+          />
+        );
+      }
       return (
         <MenuScreen
           onNavigate={(screen) => {
             if (screen === 'dashboard') {
               setActiveTab('home');
               setCurrentScreen('dashboard');
+            } else if (screen === 'profile') {
+              setCurrentScreen('profile');
             }
           }}
         />
