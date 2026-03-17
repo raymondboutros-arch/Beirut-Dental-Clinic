@@ -10,7 +10,6 @@ const serviceLabels: Record<string, { name: string; duration: string; price: num
   'veneers': { name: 'Veneers Consultation', duration: '30 min', price: 80 },
   'tmj': { name: 'TMJ Assessment', duration: '40 min', price: 90 },
   'detartrage': { name: 'Detartrage (Scaling)', duration: '45 min', price: 150 },
-  'polishing': { name: 'Teeth Polishing', duration: '20 min', price: 60 },
   'fluoride': { name: 'Fluoride Treatment', duration: '15 min', price: 35 },
   'composite': { name: 'Composite Filling', duration: '30-60 min', price: 200 },
   'crown': { name: 'Crown Placement', duration: '90 min', price: 800 },

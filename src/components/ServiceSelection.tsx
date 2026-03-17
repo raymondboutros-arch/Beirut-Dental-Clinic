@@ -42,7 +42,6 @@ const serviceCategories: ServiceCategory[] = [
     title: 'Cosmetic',
     services: [
       { id: 'whitening', name: 'Teeth Whitening', description: '60 min • Professional bleaching' },
-      { id: 'polishing', name: 'Polishing', description: '30 min • Stain removal & surface smoothing' },
     ],
   },
 ];
