@@ -1048,7 +1048,7 @@ export function ToothDetailPage({
                 className="bg-[#1E6E97] hover:bg-[#175A7A] text-white"
               >
                 <Plus className="w-4 h-4 mr-2" />
-                Composite
+                Restorative Dentistry
               </Button>
               <Button
                 onClick={() => handleAddNewTreatment('Implant')}
@@ -1128,7 +1128,7 @@ export function ToothDetailPage({
                           ? 'bg-pink-50 text-pink-700 border-pink-200'
                           : 'bg-teal-50 text-teal-700 border-teal-200'}
                       >
-                        {treatment.treatmentType}
+                        {treatment.treatmentType === 'Composite' ? 'Restorative Dentistry' : treatment.treatmentType}
                       </Badge>
                       <div className="flex-1">
                         <p className="text-gray-900">
@@ -1171,7 +1171,7 @@ export function ToothDetailPage({
                       className="bg-[#1E6E97] hover:bg-[#175A7A] text-white"
                     >
                       <Plus className="w-3 h-3 mr-1" />
-                      Composite
+                      Restorative Dentistry
                     </Button>
                     <Button
                       onClick={() => handleAddNewTreatment('Implant')}

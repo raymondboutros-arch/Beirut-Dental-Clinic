@@ -21,6 +21,7 @@ const serviceCategories: ServiceCategory[] = [
       { id: 'implant', name: 'Implant Consultation', description: '45 min • 3D imaging & planning' },
       { id: 'veneers', name: 'Veneers Consultation', description: '30 min • Smile design preview' },
       { id: 'tmj', name: 'TMJ Assessment', description: '40 min • Joint evaluation' },
+      { id: 'whitening', name: 'Teeth Whitening', description: '60 min • Professional bleaching' },
     ],
   },
   {
@@ -28,20 +29,6 @@ const serviceCategories: ServiceCategory[] = [
     services: [
       { id: 'detartrage', name: 'Detartrage (Scaling)', description: '45 min • Deep cleaning procedure' },
       { id: 'fluoride', name: 'Fluoride Treatment', description: '15 min • Enamel protection' },
-    ],
-  },
-  {
-    title: 'Restorative',
-    services: [
-      { id: 'composite', name: 'Composite Filling', description: '30-60 min • Tooth-colored restoration' },
-      { id: 'crown', name: 'Crown Placement', description: '90 min • Full coverage restoration' },
-      { id: 'root-canal', name: 'Root Canal Treatment', description: '60-90 min • Endodontic therapy' },
-    ],
-  },
-  {
-    title: 'Cosmetic',
-    services: [
-      { id: 'whitening', name: 'Teeth Whitening', description: '60 min • Professional bleaching' },
     ],
   },
 ];
