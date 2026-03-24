@@ -19,6 +19,7 @@ interface CompositeToothData {
   toothNumber: number;
   treatmentType: 'Composite';
   visitDate: string;
+  material: string;
   class: string;
   surfaces: string[];
   depthFlags: string[];
@@ -195,8 +196,16 @@ export function ToothDetailPage({
       return ['4.8']; // WN only supports 4.8mm diameter
     } else if (system === 'BLT') {
       return ['2.9', '3.3', '4.1', '4.8'];
+    } else if (system === 'BLX') {
+      return ['3.5', '3.75', '4.0', '4.5', '5.0', '5.5', '6.5'];
+    } else if (system === 'TLX') {
+      return ['3.75', '4.5', '5.5', '6.5'];
+    } else if (system === 'BLC') {
+      return ['3.3', '3.75', '4.5', '5.5', '6.5'];
+    } else if (system === 'TLC') {
+      return ['3.3', '3.75', '4.5', '5.5', '6.5'];
     } else {
-      return ['3.3', '3.75', '4.0', '4.5', '5.5', '6.5'];
+      return ['3.5', '3.75', '4.0', '4.5', '5.5', '6.5'];
     }
   };
 
@@ -207,8 +216,26 @@ export function ToothDetailPage({
     } else if (system === 'BLT') {
       return ['8', '10', '12', '14', '16'];
     } else {
-      return ['6', '8', '8.5', '10', '11.5', '13', '16', '18'];
+      return ['4', '6', '8', '10', '12', '14', '16', '18'];
     }
+  };
+
+  // Get canal count options based on tooth number
+  const getCanalCountOptions = (toothNum: number): string[] => {
+    // Teeth 13-23 (upper anterior): single canal + custom
+    if (toothNum >= 13 && toothNum <= 23) {
+      return ['Single canal', 'Custom'];
+    }
+    // Teeth 14, 15, 24, 25 (upper premolars): single + two canals + custom
+    if ([14, 15, 24, 25].includes(toothNum)) {
+      return ['Single canal', 'Two canals', 'Custom'];
+    }
+    // Teeth 16, 17, 18, 26, 27, 28 (upper molars): all options
+    if ([16, 17, 18, 26, 27, 28].includes(toothNum)) {
+      return ['Single canal', 'Two canals', 'Three canals', 'Four canals', 'Custom'];
+    }
+    // Lower teeth and others: all options
+    return ['Single canal', 'Two canals', 'Three canals', 'Four canals', 'Custom'];
   };
 
   const handleClassChange = (treatmentId: string, classValue: string) => {
@@ -268,6 +295,10 @@ export function ToothDetailPage({
 
         {treatment.treatmentType === 'Composite' ? (
           <>
+            <div>
+              <Label className="text-gray-500 text-xs">Material</Label>
+              <p className="text-gray-900 mt-1">{(treatment as CompositeToothData).material || 'Not set'}</p>
+            </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label className="text-gray-500 text-xs">Class</Label>
@@ -482,6 +513,24 @@ export function ToothDetailPage({
         {/* Treatment-specific fields */}
         {treatment.treatmentType === 'Composite' ? (
           <>
+            {/* Material */}
+            <div className="space-y-2">
+              <Label className="text-gray-700">Material</Label>
+              <Select
+                value={(treatment as CompositeToothData).material}
+                onValueChange={(value) => onTreatmentUpdate(toothNumber, treatment.id, { material: value })}
+              >
+                <SelectTrigger className="bg-gray-50 border-gray-200 text-gray-900">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="bg-white border-gray-200">
+                  <SelectItem value="Composite direct">Composite direct</SelectItem>
+                  <SelectItem value="Composite indirect">Composite indirect</SelectItem>
+                  <SelectItem value="Glass ceramic">Glass ceramic</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
             {/* Class */}
             <div className="space-y-2">
               <Label className="text-gray-700">Class</Label>
@@ -671,7 +720,7 @@ export function ToothDetailPage({
             <div className="space-y-2">
               <Label className="text-gray-700">Canal Count</Label>
               <div className="flex flex-wrap gap-2">
-                {['Single canal', 'Two canals', 'Three canals', 'Four canals', 'Custom'].map((count) => (
+                {getCanalCountOptions(toothNumber).map((count) => (
                   <Button
                     key={count}
                     type="button"

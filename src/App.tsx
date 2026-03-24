@@ -22,6 +22,7 @@ interface CompositeToothData {
   toothNumber: number;
   treatmentType: 'Composite';
   visitDate: string;
+  material: string;
   class: string;
   surfaces: string[];
   depthFlags: string[];
@@ -216,6 +217,7 @@ export default function App() {
           toothNumber,
           treatmentType: 'Composite' as const,
           visitDate: new Date().toISOString().split('T')[0],
+          material: 'Composite direct',
           class: 'Class I',
           surfaces: [],
           depthFlags: [],
@@ -355,7 +357,7 @@ export default function App() {
 
         if (treatment.treatmentType === 'Composite') {
           const d = treatment as CompositeToothData;
-          compositeTeeth.push({ toothNumber: toothNum, visitDate: d.visitDate, class: d.class, surfaces: d.surfaces, depthFlags: d.depthFlags, status: d.status, price, notes: d.notes });
+          compositeTeeth.push({ toothNumber: toothNum, visitDate: d.visitDate, material: d.material, class: d.class, surfaces: d.surfaces, depthFlags: d.depthFlags, status: d.status, price, notes: d.notes });
         } else if (treatment.treatmentType === 'Implant') {
           const d = treatment as ImplantToothData;
           implantTeeth.push({ toothNumber: toothNum, visitDate: d.visitDate, implantSystem: d.implantSystem, diameter: d.diameter, length: d.length, status: d.status, price, notes: d.notes });

@@ -11,6 +11,7 @@ import { Button } from './ui/button';
 
 interface CompositeToothData {
   toothNumber: number;
+  material: string;
   class: string;
   surfaces: string[];
   depthFlags: string[];
