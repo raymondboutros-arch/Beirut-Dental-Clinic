@@ -222,19 +222,23 @@ export function ToothDetailPage({
 
   // Get canal count options based on tooth number
   const getCanalCountOptions = (toothNum: number): string[] => {
-    // Teeth 13-23 (upper anterior): single canal + custom
-    if (toothNum >= 13 && toothNum <= 23) {
-      return ['Single canal', 'Custom'];
-    }
-    // Teeth 14, 15, 24, 25 (upper premolars): single + two canals + custom
+    // Upper premolars (14, 15, 24, 25): single + two canals + custom
     if ([14, 15, 24, 25].includes(toothNum)) {
       return ['Single canal', 'Two canals', 'Custom'];
     }
-    // Teeth 16, 17, 18, 26, 27, 28 (upper molars): all options
+    // Upper molars (16, 17, 18, 26, 27, 28): all options
     if ([16, 17, 18, 26, 27, 28].includes(toothNum)) {
       return ['Single canal', 'Two canals', 'Three canals', 'Four canals', 'Custom'];
     }
-    // Lower teeth and others: all options
+    // Upper anterior (13, 12, 11, 21, 22, 23): single canal + custom
+    if ([11, 12, 13, 21, 22, 23].includes(toothNum)) {
+      return ['Single canal', 'Custom'];
+    }
+    // Lower anterior + premolars (31-35, 41-45): single + two canals + custom
+    if ((toothNum >= 31 && toothNum <= 35) || (toothNum >= 41 && toothNum <= 45)) {
+      return ['Single canal', 'Two canals', 'Custom'];
+    }
+    // Lower molars (36-38, 46-48) and others: all options
     return ['Single canal', 'Two canals', 'Three canals', 'Four canals', 'Custom'];
   };
 
