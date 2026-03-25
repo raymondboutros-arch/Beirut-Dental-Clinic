@@ -25,7 +25,7 @@ export function ProfileScreen({ onBack }: ProfileScreenProps) {
     <div className="bg-[#FAFAFA] min-h-screen pb-[100px]">
       {/* Header */}
       <div className="bg-white border-b border-[#D9DEE2] px-4 py-4 sticky top-0 z-10">
-        <div className="relative flex items-center justify-center max-w-[430px] mx-auto">
+        <div className="relative flex items-center justify-center max-w-[430px] md:max-w-[768px] lg:max-w-[1024px] mx-auto">
           <button
             onClick={onBack}
             className="absolute left-0 p-2 -ml-2 hover:bg-gray-50 rounded-full transition-colors"
@@ -44,7 +44,7 @@ export function ProfileScreen({ onBack }: ProfileScreenProps) {
       </div>
 
       {/* Content */}
-      <div className="px-5 py-6 max-w-[430px] mx-auto space-y-4">
+      <div className="px-5 md:px-8 py-6 max-w-[430px] md:max-w-[768px] lg:max-w-[1024px] mx-auto space-y-4">
         {/* Avatar & Name Card */}
         <div className="bg-white border border-[#D9DEE2] rounded-[16px] p-6 flex flex-col items-center text-center">
           <div className="relative mb-4">

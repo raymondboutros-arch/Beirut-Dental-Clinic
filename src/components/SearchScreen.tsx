@@ -32,7 +32,7 @@ export function SearchScreen() {
     <div className="bg-[#FAFAFA] min-h-screen pb-[100px]">
       {/* Header */}
       <div className="bg-white border-b border-[#D9DEE2] px-5 pt-5 pb-4">
-        <div className="max-w-[430px] mx-auto">
+        <div className="max-w-[430px] md:max-w-[768px] lg:max-w-[1024px] mx-auto">
           <h1 className="font-medium text-[19px] text-[#1C1C1C] mb-4">Search</h1>
           <div className="relative">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#8AA4B1]" />
@@ -47,7 +47,7 @@ export function SearchScreen() {
         </div>
       </div>
 
-      <div className="px-5 py-6 max-w-[430px] mx-auto">
+      <div className="px-5 py-6 max-w-[430px] md:max-w-[768px] lg:max-w-[1024px] mx-auto">
         {query ? (
           /* Search Results */
           <div>
@@ -105,7 +105,7 @@ export function SearchScreen() {
                 <TrendingUp className="w-4 h-4 text-[#8AA4B1]" />
                 <h2 className="font-semibold text-[#1C1C1C] text-sm">Popular Services</h2>
               </div>
-              <div className="space-y-3">
+              <div className="space-y-3 md:grid md:grid-cols-2 md:gap-3 md:space-y-0">
                 {popularServices.map((service) => (
                   <div
                     key={service.name}

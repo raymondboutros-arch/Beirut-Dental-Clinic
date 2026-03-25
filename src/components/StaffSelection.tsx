@@ -69,7 +69,7 @@ export function StaffSelection({ selectedService, onBack, onContinue }: StaffSel
     <div className="bg-[#FAFAFA] min-h-screen flex flex-col pb-[85px]">
       {/* Header */}
       <div className="bg-white border-b border-[#D9DEE2] px-4 py-4 sticky top-0 z-10">
-        <div className="relative flex items-center justify-center max-w-[430px] mx-auto">
+        <div className="relative flex items-center justify-center max-w-[430px] md:max-w-[768px] lg:max-w-[1024px] mx-auto">
           <button
             onClick={onBack}
             className="absolute left-0 p-2 -ml-2 hover:bg-gray-50 rounded-full transition-colors"
@@ -83,7 +83,7 @@ export function StaffSelection({ selectedService, onBack, onContinue }: StaffSel
 
       {/* Step Indicator */}
       <div className="bg-white border-b border-[#D9DEE2] px-4 py-3">
-        <div className="max-w-[430px] mx-auto flex items-center gap-2">
+        <div className="max-w-[430px] md:max-w-[768px] lg:max-w-[1024px] mx-auto flex items-center gap-2">
           <div className="flex-1 h-[3px] bg-[#1E6E97] rounded-full" />
           <div className="flex-1 h-[3px] bg-[#1E6E97] rounded-full" />
           <div className="flex-1 h-[3px] bg-[#D9DEE2] rounded-full" />
@@ -94,12 +94,12 @@ export function StaffSelection({ selectedService, onBack, onContinue }: StaffSel
 
       {/* Content */}
       <div className="flex-1 overflow-auto px-4 py-6">
-        <div className="max-w-[430px] mx-auto">
+        <div className="max-w-[430px] md:max-w-[768px] lg:max-w-[1024px] mx-auto">
           <p className="text-sm text-[#6A7279] mb-5">
             Choose your preferred practitioner for this visit
           </p>
 
-          <div className="space-y-3">
+          <div className="space-y-3 md:grid md:grid-cols-2 md:gap-3 md:space-y-0">
             {staffMembers.map((staff) => {
               const isSelected = selectedStaff === staff.id;
               return (
@@ -165,7 +165,7 @@ export function StaffSelection({ selectedService, onBack, onContinue }: StaffSel
 
       {/* Bottom CTA */}
       <div className="bg-white border-t border-[#D9DEE2] px-4 py-4 sticky bottom-[85px]">
-        <div className="max-w-[430px] mx-auto">
+        <div className="max-w-[430px] md:max-w-[768px] lg:max-w-[1024px] mx-auto">
           <button
             onClick={() => selectedStaff && onContinue(selectedStaff)}
             disabled={!selectedStaff}

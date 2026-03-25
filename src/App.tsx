@@ -64,10 +64,18 @@ interface SurgeryToothData {
   toothNumber: number;
   treatmentType: 'Surgery';
   visitDate: string;
-  subCategory: 'Extractions' | 'Bone Graft';
+  subCategory: 'Extractions' | 'Bone Graft' | 'Apicectomy' | 'Frenectomy' | 'Crown Lengthening' | 'Hemisection';
   extractionType?: string;
   graftType?: string;
+  graftBrand?: string;
+  graftProcedure?: string;
   membraneType?: string;
+  sinusApproach?: string;
+  sinusImplant?: string;
+  crownLengtheningScope?: string;
+  crownLengtheningTeeth?: string;
+  apicectomyTechnique?: string;
+  frenectomyType?: string;
   status: string;
   priceOption: string;
   customPrice: string;
@@ -113,7 +121,33 @@ interface PediatricToothData {
   notes: string;
 }
 
-type ToothData = CompositeToothData | ImplantToothData | RootCanalToothData | SurgeryToothData | PeriodonticsToothData | OrthodonticsToothData | PediatricToothData;
+interface BridgeTooth {
+  toothNumber: number;
+  role: 'abutment' | 'pontic';
+}
+
+interface BridgeGroup {
+  id: string;
+  teeth: { toothNumber: number; role: 'abutment' | 'pontic'; treatmentId: string }[];
+  createdAt: string;
+}
+
+interface ProstheticsToothData {
+  id: string;
+  toothNumber: number;
+  treatmentType: 'Prosthetics';
+  visitDate: string;
+  subCategory: string;
+  prosthFields: Record<string, string | string[]>;
+  bridgeGroupId?: string;
+  bridgeRole?: 'abutment' | 'pontic';
+  status: string;
+  priceOption: string;
+  customPrice: string;
+  notes: string;
+}
+
+type ToothData = CompositeToothData | ImplantToothData | RootCanalToothData | SurgeryToothData | PeriodonticsToothData | OrthodonticsToothData | PediatricToothData | ProstheticsToothData;
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<ActiveTab>('home');
@@ -122,6 +156,7 @@ export default function App() {
   const [teethData, setTeethData] = useState<Record<number, ToothData[]>>({});
   const [savedTeeth, setSavedTeeth] = useState<number[]>([]);
   const [savedPayload, setSavedPayload] = useState<any>(null);
+  const [bridgeGroups, setBridgeGroups] = useState<Record<string, BridgeGroup>>({});
 
   // Booking flow state
   const [bookingService, setBookingService] = useState<string>('');
@@ -152,6 +187,7 @@ export default function App() {
           setTeethData(convertedData);
         }
         if (parsed.savedTeeth) setSavedTeeth(parsed.savedTeeth);
+        if (parsed.bridgeGroups) setBridgeGroups(parsed.bridgeGroups);
       } catch (e) {
         console.error('Error loading saved data:', e);
         localStorage.removeItem('dentalTreatmentData');
@@ -210,7 +246,7 @@ export default function App() {
     }
   };
 
-  const handleAddTreatment = (toothNumber: number, treatmentType: 'Composite' | 'Implant' | 'Root Canal' | 'Surgery' | 'Periodontics' | 'Orthodontics' | 'Pediatric') => {
+  const handleAddTreatment = (toothNumber: number, treatmentType: 'Composite' | 'Implant' | 'Root Canal' | 'Surgery' | 'Periodontics' | 'Orthodontics' | 'Pediatric' | 'Prosthetics') => {
     const newTreatment = treatmentType === 'Composite'
       ? {
           id: `${toothNumber}-${Date.now()}`,
@@ -294,6 +330,19 @@ export default function App() {
           customPrice: '',
           notes: '',
         }
+      : treatmentType === 'Prosthetics'
+      ? {
+          id: `${toothNumber}-${Date.now()}`,
+          toothNumber,
+          treatmentType: 'Prosthetics' as const,
+          visitDate: new Date().toISOString().split('T')[0],
+          subCategory: 'Single Crown',
+          prosthFields: {} as Record<string, string | string[]>,
+          status: 'Planned',
+          priceOption: '300',
+          customPrice: '',
+          notes: '',
+        }
       : {
           id: `${toothNumber}-${Date.now()}`,
           toothNumber,
@@ -331,6 +380,7 @@ export default function App() {
     const dataToSave = {
       teethData: { ...teethData, [toothNumber]: updatedTreatments },
       savedTeeth: updatedTreatments.length === 0 ? savedTeeth.filter(t => t !== toothNumber) : savedTeeth,
+      bridgeGroups,
     };
     localStorage.setItem('dentalTreatmentData', JSON.stringify(dataToSave));
     rebuildPayload();
@@ -345,6 +395,7 @@ export default function App() {
     const periodonticsTeeth: any[] = [];
     const orthodonticsTeeth: any[] = [];
     const pediatricTeeth: any[] = [];
+    const prostheticsTeeth: any[] = [];
     let totalCost = 0;
 
     savedTeeth.forEach(toothNum => {
@@ -373,6 +424,9 @@ export default function App() {
         } else if (treatment.treatmentType === 'Pediatric') {
           const d = treatment as PediatricToothData;
           pediatricTeeth.push({ toothNumber: toothNum, visitDate: d.visitDate, subCategory: d.subCategory, pedoFields: d.pedoFields, status: d.status, price, notes: d.notes });
+        } else if (treatment.treatmentType === 'Prosthetics') {
+          const d = treatment as ProstheticsToothData;
+          prostheticsTeeth.push({ toothNumber: toothNum, visitDate: d.visitDate, subCategory: d.subCategory, prosthFields: d.prosthFields, status: d.status, price, notes: d.notes });
         } else {
           const d = treatment as PeriodonticsToothData;
           periodonticsTeeth.push({ toothNumber: toothNum, visitDate: d.visitDate, subCategory: d.subCategory, perioFields: d.perioFields, status: d.status, price, notes: d.notes });
@@ -388,6 +442,7 @@ export default function App() {
     if (periodonticsTeeth.length > 0) payload.treatments.push({ type: 'Periodontics', periodontics: periodonticsTeeth });
     if (orthodonticsTeeth.length > 0) payload.treatments.push({ type: 'Orthodontics', orthodontics: orthodonticsTeeth });
     if (pediatricTeeth.length > 0) payload.treatments.push({ type: 'Pediatric', pediatrics: pediatricTeeth });
+    if (prostheticsTeeth.length > 0) payload.treatments.push({ type: 'Prosthetics', prosthetics: prostheticsTeeth });
     payload.totalCost = totalCost;
     payload.timestamp = new Date().toISOString();
     setSavedPayload(payload);
@@ -398,10 +453,148 @@ export default function App() {
       ? savedTeeth
       : [...savedTeeth, toothNumber];
     setSavedTeeth(updatedSavedTeeth);
-    const dataToSave = { teethData, savedTeeth: updatedSavedTeeth };
+    const dataToSave = { teethData, savedTeeth: updatedSavedTeeth, bridgeGroups };
     localStorage.setItem('dentalTreatmentData', JSON.stringify(dataToSave));
     rebuildPayload();
     toast.success(`Tooth ${toothNumber} details saved`);
+  };
+
+  const handleBridgeSave = (
+    originToothNumber: number,
+    existingBridgeGroupId: string | null,
+    bridgeTeeth: { toothNumber: number; role: 'abutment' | 'pontic' }[],
+    sharedFields: Record<string, string | string[]>,
+    sharedMeta: { visitDate: string; subCategory: string; status: string; priceOption: string; customPrice: string; notes: string }
+  ) => {
+    const groupId = existingBridgeGroupId || `bridge-${Date.now()}`;
+    const newTeethData = { ...teethData };
+    let newSavedTeeth = [...savedTeeth];
+    const groupTeethInfo: BridgeGroup['teeth'] = [];
+
+    // If editing existing bridge, remove old records from teeth that are no longer in the bridge
+    if (existingBridgeGroupId && bridgeGroups[existingBridgeGroupId]) {
+      const oldGroup = bridgeGroups[existingBridgeGroupId];
+      oldGroup.teeth.forEach(oldTooth => {
+        const stillInBridge = bridgeTeeth.some(bt => bt.toothNumber === oldTooth.toothNumber);
+        if (!stillInBridge) {
+          // Remove bridge treatment from this tooth
+          const toothTreatments = newTeethData[oldTooth.toothNumber] || [];
+          const filtered = toothTreatments.filter(t => t.id !== oldTooth.treatmentId);
+          if (filtered.length === 0) {
+            delete newTeethData[oldTooth.toothNumber];
+            newSavedTeeth = newSavedTeeth.filter(t => t !== oldTooth.toothNumber);
+          } else {
+            newTeethData[oldTooth.toothNumber] = filtered;
+          }
+        }
+      });
+    }
+
+    // On the origin tooth, remove the original prosthetics treatment that was being edited
+    // (the one created by handleAddNewTreatment before user switched to Bridge)
+    if (!existingBridgeGroupId) {
+      const originTreatments = newTeethData[originToothNumber] || [];
+      // Find the non-bridge prosthetics treatment on the origin tooth (the one being edited)
+      const originalProsth = originTreatments.find(t =>
+        t.treatmentType === 'Prosthetics' && !(t as ProstheticsToothData).bridgeGroupId
+      );
+      if (originalProsth) {
+        newTeethData[originToothNumber] = originTreatments.filter(t => t.id !== originalProsth.id);
+      }
+    }
+
+    // Create/update treatment records for each bridge tooth
+    // Price: full price on origin tooth, $0 on others
+    bridgeTeeth.forEach(bt => {
+      const existingTreatments = newTeethData[bt.toothNumber] || [];
+      const existingBridgeTreatment = existingBridgeGroupId
+        ? existingTreatments.find(t => t.treatmentType === 'Prosthetics' && (t as ProstheticsToothData).bridgeGroupId === existingBridgeGroupId)
+        : null;
+
+      const isOrigin = bt.toothNumber === originToothNumber;
+      const treatmentId = existingBridgeTreatment?.id || `${bt.toothNumber}-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`;
+
+      const treatment: ProstheticsToothData = {
+        id: treatmentId,
+        toothNumber: bt.toothNumber,
+        treatmentType: 'Prosthetics',
+        visitDate: sharedMeta.visitDate,
+        subCategory: 'Bridge',
+        prosthFields: { ...sharedFields },
+        bridgeGroupId: groupId,
+        bridgeRole: bt.role,
+        status: sharedMeta.status,
+        priceOption: isOrigin ? sharedMeta.priceOption : '0',
+        customPrice: isOrigin ? sharedMeta.customPrice : '',
+        notes: sharedMeta.notes,
+      };
+
+      if (existingBridgeTreatment) {
+        // Update existing
+        newTeethData[bt.toothNumber] = existingTreatments.map(t =>
+          t.id === existingBridgeTreatment.id ? treatment : t
+        );
+      } else {
+        // Add new
+        newTeethData[bt.toothNumber] = [...existingTreatments, treatment];
+      }
+
+      // Ensure tooth is in savedTeeth
+      if (!newSavedTeeth.includes(bt.toothNumber)) {
+        newSavedTeeth.push(bt.toothNumber);
+      }
+
+      groupTeethInfo.push({ toothNumber: bt.toothNumber, role: bt.role, treatmentId });
+    });
+
+    const newBridgeGroups = {
+      ...bridgeGroups,
+      [groupId]: { id: groupId, teeth: groupTeethInfo, createdAt: existingBridgeGroupId ? bridgeGroups[existingBridgeGroupId]?.createdAt || new Date().toISOString() : new Date().toISOString() },
+    };
+
+    setTeethData(newTeethData);
+    setSavedTeeth(newSavedTeeth);
+    setBridgeGroups(newBridgeGroups);
+
+    const dataToSave = { teethData: newTeethData, savedTeeth: newSavedTeeth, bridgeGroups: newBridgeGroups };
+    localStorage.setItem('dentalTreatmentData', JSON.stringify(dataToSave));
+    rebuildPayload();
+
+    const toothNumbers = bridgeTeeth.map(bt => bt.toothNumber).sort((a, b) => a - b).join(', ');
+    toast.success(`Bridge saved (teeth ${toothNumbers})`);
+  };
+
+  const handleBridgeDelete = (bridgeGroupIdToDelete: string) => {
+    const group = bridgeGroups[bridgeGroupIdToDelete];
+    if (!group) return;
+
+    const newTeethData = { ...teethData };
+    let newSavedTeeth = [...savedTeeth];
+
+    group.teeth.forEach(bt => {
+      const toothTreatments = newTeethData[bt.toothNumber] || [];
+      const filtered = toothTreatments.filter(t => t.id !== bt.treatmentId);
+      if (filtered.length === 0) {
+        delete newTeethData[bt.toothNumber];
+        newSavedTeeth = newSavedTeeth.filter(t => t !== bt.toothNumber);
+      } else {
+        newTeethData[bt.toothNumber] = filtered;
+      }
+    });
+
+    const newBridgeGroups = { ...bridgeGroups };
+    delete newBridgeGroups[bridgeGroupIdToDelete];
+
+    setTeethData(newTeethData);
+    setSavedTeeth(newSavedTeeth);
+    setBridgeGroups(newBridgeGroups);
+
+    const dataToSave = { teethData: newTeethData, savedTeeth: newSavedTeeth, bridgeGroups: newBridgeGroups };
+    localStorage.setItem('dentalTreatmentData', JSON.stringify(dataToSave));
+    rebuildPayload();
+
+    const toothNumbers = group.teeth.map(t => t.toothNumber).sort((a, b) => a - b).join(', ');
+    toast.success(`Bridge removed (teeth ${toothNumbers})`);
   };
 
   const handleToothRemove = (toothNumber: number) => {
@@ -411,7 +604,7 @@ export default function App() {
     setTeethData(newData);
     const updatedSavedTeeth = savedTeeth.filter(t => t !== toothNumber);
     setSavedTeeth(updatedSavedTeeth);
-    const dataToSave = { teethData: newData, savedTeeth: updatedSavedTeeth };
+    const dataToSave = { teethData: newData, savedTeeth: updatedSavedTeeth, bridgeGroups };
     localStorage.setItem('dentalTreatmentData', JSON.stringify(dataToSave));
     if (updatedSavedTeeth.length > 0) {
       rebuildPayload();
@@ -426,6 +619,7 @@ export default function App() {
     setTeethData({});
     setSavedTeeth([]);
     setSavedPayload(null);
+    setBridgeGroups({});
     localStorage.removeItem('dentalTreatmentData');
     toast.success('All selections cleared');
   };
@@ -511,6 +705,8 @@ export default function App() {
           savedTeeth={savedTeeth}
           activeTooth={selectedTeeth[0]}
           savedPayload={savedPayload}
+          bridgeGroups={bridgeGroups}
+          teethData={teethData}
           onToothToggle={handleToothToggle}
           onClearAll={handleClearAll}
           onBack={() => setCurrentScreen('home')}
@@ -528,6 +724,10 @@ export default function App() {
             onRemoveAllTreatments={handleToothRemove}
             onClose={() => setSelectedTeeth([])}
             onSave={handleToothSave}
+            bridgeGroups={bridgeGroups}
+            savedTeeth={savedTeeth}
+            onBridgeSave={handleBridgeSave}
+            onBridgeDelete={handleBridgeDelete}
           />
         )}
       </>
@@ -535,7 +735,7 @@ export default function App() {
   };
 
   return (
-    <div className="max-w-[430px] mx-auto min-h-screen bg-[#FAFAFA] relative shadow-2xl">
+    <div className="max-w-[430px] md:max-w-[768px] lg:max-w-[1024px] mx-auto min-h-screen bg-[#FAFAFA] relative shadow-2xl">
       {renderContent()}
       <BottomNavigation activeTab={activeTab} onTabChange={handleTabChange} />
       <Toaster />

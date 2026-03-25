@@ -93,7 +93,7 @@ export function DateTimeSelection({ onBack, onContinue }: DateTimeSelectionProps
     <div className="bg-[#FAFAFA] min-h-screen flex flex-col pb-[85px]">
       {/* Header */}
       <div className="bg-white border-b border-[#D9DEE2] px-4 py-4 sticky top-0 z-10">
-        <div className="relative flex items-center justify-center max-w-[430px] mx-auto">
+        <div className="relative flex items-center justify-center max-w-[430px] md:max-w-[768px] lg:max-w-[1024px] mx-auto">
           <button
             onClick={onBack}
             className="absolute left-0 p-2 -ml-2 hover:bg-gray-50 rounded-full transition-colors"
@@ -107,7 +107,7 @@ export function DateTimeSelection({ onBack, onContinue }: DateTimeSelectionProps
 
       {/* Step Indicator */}
       <div className="bg-white border-b border-[#D9DEE2] px-4 py-3">
-        <div className="max-w-[430px] mx-auto flex items-center gap-2">
+        <div className="max-w-[430px] md:max-w-[768px] lg:max-w-[1024px] mx-auto flex items-center gap-2">
           <div className="flex-1 h-[3px] bg-[#1E6E97] rounded-full" />
           <div className="flex-1 h-[3px] bg-[#1E6E97] rounded-full" />
           <div className="flex-1 h-[3px] bg-[#1E6E97] rounded-full" />
@@ -118,7 +118,7 @@ export function DateTimeSelection({ onBack, onContinue }: DateTimeSelectionProps
 
       {/* Content */}
       <div className="flex-1 overflow-auto px-4 py-5">
-        <div className="max-w-[430px] mx-auto">
+        <div className="max-w-[430px] md:max-w-[768px] lg:max-w-[1024px] mx-auto">
 
           {/* Calendar Card */}
           <div className="bg-white border border-[#D9DEE2] rounded-[16px] p-4 mb-5">
@@ -196,7 +196,7 @@ export function DateTimeSelection({ onBack, onContinue }: DateTimeSelectionProps
               {timeSlots.map((group) => (
                 <div key={group.id}>
                   <h3 className="font-semibold text-[#1C1C1C] text-sm mb-3">{group.label}</h3>
-                  <div className="grid grid-cols-3 gap-2">
+                  <div className="grid grid-cols-3 md:grid-cols-5 gap-2">
                     {group.slots.map((slot) => {
                       const isUnavailable = unavailableSlots.includes(slot);
                       const isSelected = selectedTime === slot;
@@ -233,7 +233,7 @@ export function DateTimeSelection({ onBack, onContinue }: DateTimeSelectionProps
 
       {/* Bottom CTA */}
       <div className="bg-white border-t border-[#D9DEE2] px-4 py-4 sticky bottom-[85px]">
-        <div className="max-w-[430px] mx-auto">
+        <div className="max-w-[430px] md:max-w-[768px] lg:max-w-[1024px] mx-auto">
           {selectedDate && selectedTime && (
             <p className="text-center text-sm text-[#6A7279] mb-3">
               {formattedDate} at {selectedTime}

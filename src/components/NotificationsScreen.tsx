@@ -97,7 +97,7 @@ export function NotificationsScreen() {
     <div className="bg-[#FAFAFA] min-h-screen pb-[100px]">
       {/* Header */}
       <div className="bg-white border-b border-[#D9DEE2] px-5 pt-5 pb-4">
-        <div className="max-w-[430px] mx-auto flex items-center justify-between">
+        <div className="max-w-[430px] md:max-w-[768px] lg:max-w-[1024px] mx-auto flex items-center justify-between">
           <div>
             <h1 className="font-medium text-[19px] text-[#1C1C1C]">Notifications</h1>
             {unreadCount > 0 && (
@@ -112,7 +112,7 @@ export function NotificationsScreen() {
         </div>
       </div>
 
-      <div className="px-5 py-4 max-w-[430px] mx-auto">
+      <div className="px-5 py-4 max-w-[430px] md:max-w-[768px] lg:max-w-[1024px] mx-auto">
         <div className="space-y-3">
           {notifications.map((notification) => (
             <div

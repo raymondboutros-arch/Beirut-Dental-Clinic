@@ -13,6 +13,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './
 import { PeriodonticsForm, PeriodonticsPreview, type PeriodonticsFields, type PerioSubCategory, PERIO_SUB_CATEGORIES } from './PeriodonticsForm';
 import { OrthodonticsForm, OrthodonticsPreview, type OrthodonticsFields, type OrthoSubCategory, ORTHO_SUB_CATEGORIES } from './OrthodonticsForm';
 import { PediatricForm, PediatricPreview, type PediatricFields, type PedoSubCategory, PEDO_SUB_CATEGORIES } from './PediatricForm';
+import { ProstheticsForm, ProstheticsPreview, type ProstheticsFields, type ProsthSubCategory, PROSTH_SUB_CATEGORIES } from './ProstheticsForm';
 
 interface CompositeToothData {
   id: string;
@@ -61,10 +62,18 @@ interface SurgeryToothData {
   toothNumber: number;
   treatmentType: 'Surgery';
   visitDate: string;
-  subCategory: 'Extractions' | 'Bone Graft';
-  extractionType?: string; // for Extractions subcategory
-  graftType?: string; // for Bone Graft subcategory
-  membraneType?: string; // conditional, only if graftType is 'Membrane'
+  subCategory: 'Extractions' | 'Bone Graft' | 'Apicectomy' | 'Frenectomy' | 'Crown Lengthening' | 'Hemisection';
+  extractionType?: string;
+  graftType?: string;
+  graftBrand?: string;
+  graftProcedure?: string;
+  membraneType?: string;
+  sinusApproach?: string;
+  sinusImplant?: string;
+  crownLengtheningScope?: string;
+  crownLengtheningTeeth?: string;
+  apicectomyTechnique?: string;
+  frenectomyType?: string;
   status: string;
   priceOption: string;
   customPrice: string;
@@ -110,33 +119,74 @@ interface PediatricToothData {
   notes: string;
 }
 
-type ToothData = CompositeToothData | ImplantToothData | RootCanalToothData | SurgeryToothData | PeriodonticsToothData | OrthodonticsToothData | PediatricToothData;
+interface BridgeTooth {
+  toothNumber: number;
+  role: 'abutment' | 'pontic';
+}
+
+interface BridgeGroup {
+  id: string;
+  teeth: { toothNumber: number; role: 'abutment' | 'pontic'; treatmentId: string }[];
+  createdAt: string;
+}
+
+interface ProstheticsToothData {
+  id: string;
+  toothNumber: number;
+  treatmentType: 'Prosthetics';
+  visitDate: string;
+  subCategory: string;
+  prosthFields: ProstheticsFields;
+  bridgeGroupId?: string;
+  bridgeRole?: 'abutment' | 'pontic';
+  status: string;
+  priceOption: string;
+  customPrice: string;
+  notes: string;
+}
+
+type ToothData = CompositeToothData | ImplantToothData | RootCanalToothData | SurgeryToothData | PeriodonticsToothData | OrthodonticsToothData | PediatricToothData | ProstheticsToothData;
 
 interface ToothDetailPageProps {
   toothNumber: number;
   treatments: ToothData[];
   isSaved: boolean;
-  onAddTreatment: (toothNumber: number, treatmentType: 'Composite' | 'Implant' | 'Root Canal' | 'Surgery' | 'Periodontics' | 'Orthodontics' | 'Pediatric') => string;
+  onAddTreatment: (toothNumber: number, treatmentType: 'Composite' | 'Implant' | 'Root Canal' | 'Surgery' | 'Periodontics' | 'Orthodontics' | 'Pediatric' | 'Prosthetics') => string;
   onTreatmentUpdate: (toothNumber: number, treatmentId: string, updates: Partial<ToothData>) => void;
   onTreatmentRemove: (toothNumber: number, treatmentId: string) => void;
   onRemoveAllTreatments: (toothNumber: number) => void;
   onClose: () => void;
   onSave: (toothNumber: number) => void;
+  bridgeGroups?: Record<string, BridgeGroup>;
+  savedTeeth?: number[];
+  onBridgeSave?: (
+    originToothNumber: number,
+    existingBridgeGroupId: string | null,
+    bridgeTeeth: BridgeTooth[],
+    sharedFields: Record<string, string | string[]>,
+    sharedMeta: { visitDate: string; subCategory: string; status: string; priceOption: string; customPrice: string; notes: string }
+  ) => void;
+  onBridgeDelete?: (bridgeGroupId: string) => void;
 }
 
-export function ToothDetailPage({ 
-  toothNumber, 
+export function ToothDetailPage({
+  toothNumber,
   treatments,
-  isSaved, 
+  isSaved,
   onAddTreatment,
   onTreatmentUpdate,
   onTreatmentRemove,
   onRemoveAllTreatments,
-  onClose, 
-  onSave 
+  onClose,
+  onSave,
+  bridgeGroups = {},
+  savedTeeth = [],
+  onBridgeSave,
+  onBridgeDelete,
 }: ToothDetailPageProps) {
   const [editingTreatmentId, setEditingTreatmentId] = useState<string | null>(null);
   const [showAddTreatmentMenu, setShowAddTreatmentMenu] = useState(false);
+  const [bridgeTeethSelection, setBridgeTeethSelection] = useState<BridgeTooth[]>([]);
   
   // Ensure treatments is always an array
   const treatmentsList = Array.isArray(treatments) ? treatments : [];
@@ -155,15 +205,58 @@ export function ToothDetailPage({
     return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
   };
 
-  const handleAddNewTreatment = (treatmentType: 'Composite' | 'Implant' | 'Root Canal' | 'Surgery' | 'Periodontics' | 'Orthodontics' | 'Pediatric') => {
+  const handleAddNewTreatment = (treatmentType: 'Composite' | 'Implant' | 'Root Canal' | 'Surgery' | 'Periodontics' | 'Orthodontics' | 'Pediatric' | 'Prosthetics') => {
     const newTreatmentId = onAddTreatment(toothNumber, treatmentType);
     setEditingTreatmentId(newTreatmentId);
     setShowAddTreatmentMenu(false);
+    // Initialize bridge selection with current tooth as abutment
+    if (treatmentType === 'Prosthetics') {
+      setBridgeTeethSelection([{ toothNumber, role: 'abutment' }]);
+    }
   };
 
-  const handleSaveTreatment = () => {
+  // When starting to edit an existing bridge treatment, load its teeth
+  const initBridgeEditSelection = (treatment: ProstheticsToothData) => {
+    if (treatment.bridgeGroupId && bridgeGroups[treatment.bridgeGroupId]) {
+      const group = bridgeGroups[treatment.bridgeGroupId];
+      setBridgeTeethSelection(group.teeth.map(t => ({ toothNumber: t.toothNumber, role: t.role })));
+    } else {
+      setBridgeTeethSelection([{ toothNumber, role: 'abutment' }]);
+    }
+  };
+
+  const handleSaveTreatment = (treatment?: ToothData) => {
+    // Check if this is a bridge treatment that needs special handling
+    if (treatment && treatment.treatmentType === 'Prosthetics' && (treatment as ProstheticsToothData).subCategory === 'Bridge' && onBridgeSave && bridgeTeethSelection.length > 0) {
+      const prosthTreatment = treatment as ProstheticsToothData;
+      onBridgeSave(
+        toothNumber,
+        prosthTreatment.bridgeGroupId || null,
+        bridgeTeethSelection,
+        prosthTreatment.prosthFields || {},
+        {
+          visitDate: prosthTreatment.visitDate,
+          subCategory: 'Bridge',
+          status: prosthTreatment.status,
+          priceOption: prosthTreatment.priceOption,
+          customPrice: prosthTreatment.customPrice,
+          notes: prosthTreatment.notes,
+        }
+      );
+      setEditingTreatmentId(null);
+      setBridgeTeethSelection([]);
+      return;
+    }
     onSave(toothNumber);
     setEditingTreatmentId(null);
+  };
+
+  const handleDeleteBridgeTreatment = (treatment: ProstheticsToothData) => {
+    if (treatment.bridgeGroupId && onBridgeDelete) {
+      onBridgeDelete(treatment.bridgeGroupId);
+    } else {
+      onTreatmentRemove(toothNumber, treatment.id);
+    }
   };
 
   // Get available surfaces based on class
@@ -393,24 +486,85 @@ export function ToothDetailPage({
               </div>
             </div>
 
-            {treatment.subCategory === 'Extractions' && (
+            {(treatment as SurgeryToothData).subCategory === 'Extractions' && (
               <div>
                 <Label className="text-gray-500 text-xs">Extraction Type</Label>
                 <p className="text-gray-900 mt-1">{(treatment as SurgeryToothData).extractionType}</p>
               </div>
             )}
 
-            {treatment.subCategory === 'Bone Graft' && (
+            {(treatment as SurgeryToothData).subCategory === 'Bone Graft' && (
               <>
+                {(treatment as SurgeryToothData).graftProcedure && (
+                  <div>
+                    <Label className="text-gray-500 text-xs">Procedure</Label>
+                    <p className="text-gray-900 mt-1">{(treatment as SurgeryToothData).graftProcedure}</p>
+                  </div>
+                )}
                 <div>
-                  <Label className="text-gray-500 text-xs">Graft Type</Label>
+                  <Label className="text-gray-500 text-xs">Graft Material</Label>
                   <p className="text-gray-900 mt-1">{(treatment as SurgeryToothData).graftType}</p>
                 </div>
+
+                {(treatment as SurgeryToothData).graftBrand && (
+                  <div>
+                    <Label className="text-gray-500 text-xs">Brand</Label>
+                    <p className="text-gray-900 mt-1">{(treatment as SurgeryToothData).graftBrand}</p>
+                  </div>
+                )}
+
+                {(treatment as SurgeryToothData).graftType === 'Sinus Floor Elevation' && (
+                  <>
+                    {(treatment as SurgeryToothData).sinusApproach && (
+                      <div>
+                        <Label className="text-gray-500 text-xs">Approach</Label>
+                        <p className="text-gray-900 mt-1">{(treatment as SurgeryToothData).sinusApproach}</p>
+                      </div>
+                    )}
+                    {(treatment as SurgeryToothData).sinusImplant && (
+                      <div>
+                        <Label className="text-gray-500 text-xs">Implant Placement</Label>
+                        <p className="text-gray-900 mt-1">{(treatment as SurgeryToothData).sinusImplant}</p>
+                      </div>
+                    )}
+                  </>
+                )}
 
                 {(treatment as SurgeryToothData).graftType === 'Membrane' && (
                   <div>
                     <Label className="text-gray-500 text-xs">Membrane Type</Label>
                     <p className="text-gray-900 mt-1">{(treatment as SurgeryToothData).membraneType}</p>
+                  </div>
+                )}
+              </>
+            )}
+
+            {(treatment as SurgeryToothData).subCategory === 'Apicectomy' && (treatment as SurgeryToothData).apicectomyTechnique && (
+              <div>
+                <Label className="text-gray-500 text-xs">Technique</Label>
+                <p className="text-gray-900 mt-1">{(treatment as SurgeryToothData).apicectomyTechnique}</p>
+              </div>
+            )}
+
+            {(treatment as SurgeryToothData).subCategory === 'Frenectomy' && (treatment as SurgeryToothData).frenectomyType && (
+              <div>
+                <Label className="text-gray-500 text-xs">Type</Label>
+                <p className="text-gray-900 mt-1">{(treatment as SurgeryToothData).frenectomyType}</p>
+              </div>
+            )}
+
+            {(treatment as SurgeryToothData).subCategory === 'Crown Lengthening' && (
+              <>
+                {(treatment as SurgeryToothData).crownLengtheningScope && (
+                  <div>
+                    <Label className="text-gray-500 text-xs">Scope</Label>
+                    <p className="text-gray-900 mt-1">{(treatment as SurgeryToothData).crownLengtheningScope}</p>
+                  </div>
+                )}
+                {(treatment as SurgeryToothData).crownLengtheningTeeth && (
+                  <div>
+                    <Label className="text-gray-500 text-xs">Teeth Involved</Label>
+                    <p className="text-gray-900 mt-1">{(treatment as SurgeryToothData).crownLengtheningTeeth}</p>
                   </div>
                 )}
               </>
@@ -442,6 +596,47 @@ export function ToothDetailPage({
             <PediatricPreview
               subCategory={(treatment as PediatricToothData).subCategory as PedoSubCategory}
               fields={(treatment as PediatricToothData).pedoFields || {}}
+            />
+          </>
+        ) : treatment.treatmentType === 'Prosthetics' ? (
+          <>
+            {/* Bridge indicator */}
+            {(treatment as ProstheticsToothData).bridgeGroupId && (
+              <div className="bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mb-2">
+                <p className="text-xs font-medium text-amber-700">
+                  Part of bridge
+                  {(() => {
+                    const groupId = (treatment as ProstheticsToothData).bridgeGroupId!;
+                    const group = bridgeGroups[groupId];
+                    if (group) {
+                      const teeth = group.teeth.sort((a, b) => a.toothNumber - b.toothNumber);
+                      return ` (${teeth.map(t => t.toothNumber).join('-')})`;
+                    }
+                    return '';
+                  })()}
+                  {' '}&middot;{' '}
+                  {(treatment as ProstheticsToothData).bridgeRole === 'abutment' ? 'Abutment' : 'Pontic'}
+                </p>
+              </div>
+            )}
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label className="text-gray-500 text-xs">Status</Label>
+                <p className="text-gray-900 mt-1">{(treatment as ProstheticsToothData).status}</p>
+              </div>
+            </div>
+
+            <ProstheticsPreview
+              subCategory={(treatment as ProstheticsToothData).subCategory as ProsthSubCategory}
+              fields={(treatment as ProstheticsToothData).prosthFields || {}}
+              bridgeTeeth={(() => {
+                const groupId = (treatment as ProstheticsToothData).bridgeGroupId;
+                if (groupId && bridgeGroups[groupId]) {
+                  return bridgeGroups[groupId].teeth.map(t => ({ toothNumber: t.toothNumber, role: t.role }));
+                }
+                return undefined;
+              })()}
             />
           </>
         ) : (
@@ -480,7 +675,13 @@ export function ToothDetailPage({
           <Button
             size="sm"
             variant="outline"
-            onClick={() => setEditingTreatmentId(treatment.id)}
+            onClick={() => {
+              setEditingTreatmentId(treatment.id);
+              // Initialize bridge selection when editing a bridge treatment
+              if (treatment.treatmentType === 'Prosthetics' && (treatment as ProstheticsToothData).subCategory === 'Bridge') {
+                initBridgeEditSelection(treatment as ProstheticsToothData);
+              }
+            }}
             className="text-[#6366F1] border-[#6366F1] hover:bg-[#6366F1]/10"
           >
             <Edit2 className="w-3 h-3 mr-1" />
@@ -489,11 +690,17 @@ export function ToothDetailPage({
           <Button
             size="sm"
             variant="outline"
-            onClick={() => onTreatmentRemove(toothNumber, treatment.id)}
+            onClick={() => {
+              if (treatment.treatmentType === 'Prosthetics' && (treatment as ProstheticsToothData).bridgeGroupId) {
+                handleDeleteBridgeTreatment(treatment as ProstheticsToothData);
+              } else {
+                onTreatmentRemove(toothNumber, treatment.id);
+              }
+            }}
             className="border-red-200 text-red-600 hover:bg-red-50"
           >
             <Trash2 className="w-3 h-3 mr-1" />
-            Remove
+            {treatment.treatmentType === 'Prosthetics' && (treatment as ProstheticsToothData).bridgeGroupId ? 'Remove Bridge' : 'Remove'}
           </Button>
         </div>
       </div>
@@ -768,7 +975,7 @@ export function ToothDetailPage({
               <Label className="text-gray-700">Sub-Category</Label>
               <Select
                 value={(treatment as SurgeryToothData).subCategory}
-                onValueChange={(value) => onTreatmentUpdate(toothNumber, treatment.id, { subCategory: value })}
+                onValueChange={(value) => onTreatmentUpdate(toothNumber, treatment.id, { subCategory: value, extractionType: undefined, graftType: undefined, graftBrand: undefined, graftProcedure: undefined, membraneType: undefined, sinusApproach: undefined, sinusImplant: undefined, crownLengtheningScope: undefined, crownLengtheningTeeth: undefined, apicectomyTechnique: undefined, frenectomyType: undefined })}
               >
                 <SelectTrigger className="bg-gray-50 border-gray-200 text-gray-900">
                   <SelectValue />
@@ -776,15 +983,20 @@ export function ToothDetailPage({
                 <SelectContent className="bg-white border-gray-200">
                   <SelectItem value="Extractions">Extractions</SelectItem>
                   <SelectItem value="Bone Graft">Bone Graft</SelectItem>
+                  <SelectItem value="Apicectomy">Apicectomy</SelectItem>
+                  <SelectItem value="Frenectomy">Frenectomy</SelectItem>
+                  <SelectItem value="Crown Lengthening">Crown Lengthening</SelectItem>
+                  <SelectItem value="Hemisection">Hemisection</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
+            {/* === EXTRACTIONS === */}
             {(treatment as SurgeryToothData).subCategory === 'Extractions' && (
               <div className="space-y-2">
                 <Label className="text-gray-700">Extraction Type</Label>
                 <div className="flex flex-wrap gap-2">
-                  {['Simple Extraction', 'Surgical Extraction', 'Impacted Tooth Extraction', 'Wisdom Tooth Surgical Extraction'].map((type) => (
+                  {['Simple', 'Surgical', 'Partially Impacted', 'Fully Impacted', 'Wisdom Tooth Surgical'].map((type) => (
                     <Button
                       key={type}
                       type="button"
@@ -804,18 +1016,43 @@ export function ToothDetailPage({
               </div>
             )}
 
+            {/* === BONE GRAFT === */}
             {(treatment as SurgeryToothData).subCategory === 'Bone Graft' && (
               <>
+                {/* Procedure */}
                 <div className="space-y-2">
-                  <Label className="text-gray-700">Graft Type</Label>
+                  <Label className="text-gray-700">Procedure</Label>
                   <div className="flex flex-wrap gap-2">
-                    {['Xenograft', 'Allograft', 'Autograft', 'Membrane', 'Sinus Floor Elevation'].map((type) => (
+                    {['Socket Preservation', 'Horizontal Ridge Augmentation', 'Vertical Ridge Augmentation'].map((proc) => (
+                      <Button
+                        key={proc}
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => onTreatmentUpdate(toothNumber, treatment.id, { graftProcedure: proc })}
+                        className={`${
+                          (treatment as SurgeryToothData).graftProcedure === proc
+                            ? 'bg-[#6366F1] text-white border-[#6366F1] hover:bg-[#5558E3] hover:text-white'
+                            : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'
+                        }`}
+                      >
+                        {proc}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Graft Material */}
+                <div className="space-y-2">
+                  <Label className="text-gray-700">Graft Material</Label>
+                  <div className="flex flex-wrap gap-2">
+                    {['Xenograft', 'Allograft', 'Autograft', 'Alloplast', 'Membrane', 'Sinus Floor Elevation'].map((type) => (
                       <Button
                         key={type}
                         type="button"
                         variant="outline"
                         size="sm"
-                        onClick={() => onTreatmentUpdate(toothNumber, treatment.id, { graftType: type, membraneType: type === 'Membrane' ? 'Collagen Membrane' : undefined })}
+                        onClick={() => onTreatmentUpdate(toothNumber, treatment.id, { graftType: type, graftBrand: undefined, membraneType: type === 'Membrane' ? 'Collagen Membrane' : undefined, sinusApproach: undefined, sinusImplant: undefined })}
                         className={`${
                           (treatment as SurgeryToothData).graftType === type
                             ? 'bg-[#6366F1] text-white border-[#6366F1] hover:bg-[#5558E3] hover:text-white'
@@ -828,11 +1065,109 @@ export function ToothDetailPage({
                   </div>
                 </div>
 
+                {/* Brand for Xenograft */}
+                {(treatment as SurgeryToothData).graftType === 'Xenograft' && (
+                  <div className="space-y-2">
+                    <Label className="text-gray-700">Brand</Label>
+                    <Select
+                      value={(treatment as SurgeryToothData).graftBrand || ''}
+                      onValueChange={(value) => onTreatmentUpdate(toothNumber, treatment.id, { graftBrand: value })}
+                    >
+                      <SelectTrigger className="bg-gray-50 border-gray-200 text-gray-900">
+                        <SelectValue placeholder="Select brand" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white border-gray-200">
+                        <SelectItem value="Geistlich Bio-Oss">Geistlich Bio-Oss</SelectItem>
+                        <SelectItem value="Geistlich Bio-Oss Collagen">Geistlich Bio-Oss Collagen</SelectItem>
+                        <SelectItem value="Straumann cerabone">Straumann cerabone</SelectItem>
+                        <SelectItem value="Straumann cerabone plus">Straumann cerabone plus</SelectItem>
+                        <SelectItem value="Zimmer CopiOs">Zimmer CopiOs</SelectItem>
+                        <SelectItem value="Dentsply Symbios Xenograft">Dentsply Symbios Xenograft</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+
+                {/* Brand for Allograft */}
+                {(treatment as SurgeryToothData).graftType === 'Allograft' && (
+                  <div className="space-y-2">
+                    <Label className="text-gray-700">Brand</Label>
+                    <Select
+                      value={(treatment as SurgeryToothData).graftBrand || ''}
+                      onValueChange={(value) => onTreatmentUpdate(toothNumber, treatment.id, { graftBrand: value })}
+                    >
+                      <SelectTrigger className="bg-gray-50 border-gray-200 text-gray-900">
+                        <SelectValue placeholder="Select brand" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white border-gray-200">
+                        <SelectItem value="BioHorizons MinerOss A">BioHorizons MinerOss A</SelectItem>
+                        <SelectItem value="Zimmer Puros DFDBA">Zimmer Puros DFDBA</SelectItem>
+                        <SelectItem value="Zimmer Puros FDBA">Zimmer Puros FDBA</SelectItem>
+                        <SelectItem value="MTF Biologics FDBA">MTF Biologics FDBA</SelectItem>
+                        <SelectItem value="LifeNet Health OraGRAFT">LifeNet Health OraGRAFT</SelectItem>
+                        <SelectItem value="Dentsply Symbios Allograft">Dentsply Symbios Allograft</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+
+                {/* Sinus Floor Elevation details */}
+                {(treatment as SurgeryToothData).graftType === 'Sinus Floor Elevation' && (
+                  <>
+                    <div className="space-y-2">
+                      <Label className="text-gray-700">Approach</Label>
+                      <div className="flex flex-wrap gap-2">
+                        {['Internal (Crestal)', 'External (Lateral Window)'].map((approach) => (
+                          <Button
+                            key={approach}
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => onTreatmentUpdate(toothNumber, treatment.id, { sinusApproach: approach, sinusImplant: approach === 'Internal (Crestal)' ? undefined : (treatment as SurgeryToothData).sinusImplant })}
+                            className={`${
+                              (treatment as SurgeryToothData).sinusApproach === approach
+                                ? 'bg-[#6366F1] text-white border-[#6366F1] hover:bg-[#5558E3] hover:text-white'
+                                : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'
+                            }`}
+                          >
+                            {approach}
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {(treatment as SurgeryToothData).sinusApproach === 'External (Lateral Window)' && (
+                      <div className="space-y-2">
+                        <Label className="text-gray-700">Simultaneous Implant Placement</Label>
+                        <div className="flex flex-wrap gap-2">
+                          {['With Implant', 'Without Implant'].map((opt) => (
+                            <Button
+                              key={opt}
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => onTreatmentUpdate(toothNumber, treatment.id, { sinusImplant: opt })}
+                              className={`${
+                                (treatment as SurgeryToothData).sinusImplant === opt
+                                  ? 'bg-[#6366F1] text-white border-[#6366F1] hover:bg-[#5558E3] hover:text-white'
+                                  : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'
+                              }`}
+                            >
+                              {opt}
+                            </Button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )}
+
+                {/* Membrane Type */}
                 {(treatment as SurgeryToothData).graftType === 'Membrane' && (
                   <div className="space-y-2">
                     <Label className="text-gray-700">Membrane Type</Label>
                     <div className="flex flex-wrap gap-2">
-                      {['Collagen Membrane', 'Reinforced', 'Titanium Membrane', 'Magnesium Membrane'].map((type) => (
+                      {['Collagen Membrane', 'Reinforced Collagen', 'Titanium Mesh', 'PTFE (Non-Resorbable)', 'd-PTFE'].map((type) => (
                         <Button
                           key={type}
                           type="button"
@@ -849,6 +1184,95 @@ export function ToothDetailPage({
                         </Button>
                       ))}
                     </div>
+                  </div>
+                )}
+              </>
+            )}
+
+            {/* === APICECTOMY === */}
+            {(treatment as SurgeryToothData).subCategory === 'Apicectomy' && (
+              <div className="space-y-2">
+                <Label className="text-gray-700">Technique</Label>
+                <div className="flex flex-wrap gap-2">
+                  {['Traditional', 'Microsurgical (Endodontic Microsurgery)', 'With Retrograde Filling (MTA)', 'With Retrograde Filling (Biodentine)'].map((tech) => (
+                    <Button
+                      key={tech}
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => onTreatmentUpdate(toothNumber, treatment.id, { apicectomyTechnique: tech })}
+                      className={`${
+                        (treatment as SurgeryToothData).apicectomyTechnique === tech
+                          ? 'bg-[#6366F1] text-white border-[#6366F1] hover:bg-[#5558E3] hover:text-white'
+                          : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'
+                      }`}
+                    >
+                      {tech}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* === FRENECTOMY === */}
+            {(treatment as SurgeryToothData).subCategory === 'Frenectomy' && (
+              <div className="space-y-2">
+                <Label className="text-gray-700">Type</Label>
+                <div className="flex flex-wrap gap-2">
+                  {['Labial (Upper)', 'Labial (Lower)', 'Lingual'].map((type) => (
+                    <Button
+                      key={type}
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => onTreatmentUpdate(toothNumber, treatment.id, { frenectomyType: type })}
+                      className={`${
+                        (treatment as SurgeryToothData).frenectomyType === type
+                          ? 'bg-[#6366F1] text-white border-[#6366F1] hover:bg-[#5558E3] hover:text-white'
+                          : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'
+                      }`}
+                    >
+                      {type}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* === CROWN LENGTHENING === */}
+            {(treatment as SurgeryToothData).subCategory === 'Crown Lengthening' && (
+              <>
+                <div className="space-y-2">
+                  <Label className="text-gray-700">Scope</Label>
+                  <div className="flex flex-wrap gap-2">
+                    {['Full Upper Arch', 'Full Lower Arch', 'By Tooth'].map((scope) => (
+                      <Button
+                        key={scope}
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => onTreatmentUpdate(toothNumber, treatment.id, { crownLengtheningScope: scope, crownLengtheningTeeth: scope === 'By Tooth' ? (treatment as SurgeryToothData).crownLengtheningTeeth : undefined })}
+                        className={`${
+                          (treatment as SurgeryToothData).crownLengtheningScope === scope
+                            ? 'bg-[#6366F1] text-white border-[#6366F1] hover:bg-[#5558E3] hover:text-white'
+                            : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'
+                        }`}
+                      >
+                        {scope}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+
+                {(treatment as SurgeryToothData).crownLengtheningScope === 'By Tooth' && (
+                  <div className="space-y-2">
+                    <Label className="text-gray-700">Teeth Involved</Label>
+                    <Input
+                      value={(treatment as SurgeryToothData).crownLengtheningTeeth || ''}
+                      onChange={(e) => onTreatmentUpdate(toothNumber, treatment.id, { crownLengtheningTeeth: e.target.value })}
+                      placeholder="e.g. 11, 12, 13"
+                      className="bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400"
+                    />
                   </div>
                 )}
               </>
@@ -921,6 +1345,49 @@ export function ToothDetailPage({
               <Label className="text-gray-700">Status</Label>
               <Select
                 value={(treatment as PediatricToothData).status}
+                onValueChange={(value) => onTreatmentUpdate(toothNumber, treatment.id, { status: value })}
+              >
+                <SelectTrigger className="bg-gray-50 border-gray-200 text-gray-900">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="bg-white border-gray-200">
+                  <SelectItem value="Planned">Planned</SelectItem>
+                  <SelectItem value="In Progress">In Progress</SelectItem>
+                  <SelectItem value="Completed">Completed</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </>
+        ) : treatment.treatmentType === 'Prosthetics' ? (
+          <>
+            {/* Prosthetic Dentistry */}
+            <ProstheticsForm
+              subCategory={(treatment as ProstheticsToothData).subCategory as ProsthSubCategory}
+              fields={(treatment as ProstheticsToothData).prosthFields || {}}
+              onSubCategoryChange={(sub) => {
+                onTreatmentUpdate(toothNumber, treatment.id, { subCategory: sub, prosthFields: {} } as any);
+                // Reset bridge selection when changing sub-category
+                if (sub === 'Bridge') {
+                  setBridgeTeethSelection([{ toothNumber, role: 'abutment' }]);
+                } else {
+                  setBridgeTeethSelection([]);
+                }
+              }}
+              onFieldChange={(key, value) => {
+                const currentFields = (treatment as ProstheticsToothData).prosthFields || {};
+                onTreatmentUpdate(toothNumber, treatment.id, { prosthFields: { ...currentFields, [key]: value } } as any);
+              }}
+              currentToothNumber={toothNumber}
+              bridgeTeeth={bridgeTeethSelection}
+              onBridgeTeethChange={setBridgeTeethSelection}
+              savedTeeth={savedTeeth}
+            />
+
+            {/* Status */}
+            <div className="space-y-2">
+              <Label className="text-gray-700">Status</Label>
+              <Select
+                value={(treatment as ProstheticsToothData).status}
                 onValueChange={(value) => onTreatmentUpdate(toothNumber, treatment.id, { status: value })}
               >
                 <SelectTrigger className="bg-gray-50 border-gray-200 text-gray-900">
@@ -1032,10 +1499,10 @@ export function ToothDetailPage({
         {/* Action Buttons */}
         <div className="flex gap-2 pt-3 border-t border-gray-200">
           <Button
-            onClick={handleSaveTreatment}
+            onClick={() => handleSaveTreatment(treatment)}
             className="flex-1 bg-[#6366F1] hover:bg-[#5558E3] text-white shadow-[0_0_12px_rgba(99,102,241,0.3)]"
           >
-            Save Treatment
+            {treatment.treatmentType === 'Prosthetics' && (treatment as ProstheticsToothData).subCategory === 'Bridge' && bridgeTeethSelection.length > 1 ? 'Save Bridge' : 'Save Treatment'}
           </Button>
           <Button
             onClick={() => setEditingTreatmentId(null)}
@@ -1053,7 +1520,7 @@ export function ToothDetailPage({
     <div className="fixed inset-0 bg-[#FAFAFA] z-50 overflow-auto">
       {/* Header */}
       <div className="bg-white border-b border-[#D9DEE2] sticky top-0 z-10">
-        <div className="max-w-[430px] mx-auto px-5 py-4">
+        <div className="max-w-[430px] md:max-w-[768px] lg:max-w-[1024px] mx-auto px-5 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Button
@@ -1089,7 +1556,7 @@ export function ToothDetailPage({
       </div>
 
       {/* Content */}
-      <div className="max-w-[430px] mx-auto px-5 py-5 pb-[120px]">
+      <div className="max-w-[430px] md:max-w-[768px] lg:max-w-[1024px] mx-auto px-5 py-5 pb-[120px]">
         {treatmentsList.length === 0 ? (
           // No treatments
           <div className="bg-white border border-[#D9DEE2] rounded-[16px] p-6 text-center">
@@ -1151,6 +1618,14 @@ export function ToothDetailPage({
                 <Plus className="w-4 h-4 mr-2" />
                 Pediatric
               </Button>
+              <Button
+                onClick={() => handleAddNewTreatment('Prosthetics')}
+                variant="outline"
+                className="border-[#1E6E97] text-[#1E6E97] hover:bg-[#E8F4F8]"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Prosthetic Dentistry
+              </Button>
             </div>
           </div>
         ) : (
@@ -1179,9 +1654,11 @@ export function ToothDetailPage({
                           ? 'bg-orange-50 text-orange-700 border-orange-200'
                           : treatment.treatmentType === 'Pediatric'
                           ? 'bg-pink-50 text-pink-700 border-pink-200'
+                          : treatment.treatmentType === 'Prosthetics'
+                          ? 'bg-amber-50 text-amber-700 border-amber-200'
                           : 'bg-teal-50 text-teal-700 border-teal-200'}
                       >
-                        {treatment.treatmentType === 'Composite' ? 'Restorative Dentistry' : treatment.treatmentType}
+                        {treatment.treatmentType === 'Composite' ? 'Restorative Dentistry' : treatment.treatmentType === 'Prosthetics' ? 'Prosthetic Dentistry' : treatment.treatmentType}
                       </Badge>
                       <div className="flex-1">
                         <p className="text-gray-900">
@@ -1197,6 +1674,8 @@ export function ToothDetailPage({
                             ? `${(treatment as OrthodonticsToothData).subCategory} - ${formatDate(treatment.visitDate)}`
                             : treatment.treatmentType === 'Pediatric'
                             ? `${(treatment as PediatricToothData).subCategory} - ${formatDate(treatment.visitDate)}`
+                            : treatment.treatmentType === 'Prosthetics'
+                            ? `${(treatment as ProstheticsToothData).subCategory} - ${formatDate(treatment.visitDate)}`
                             : `${(treatment as PeriodonticsToothData).subCategory} - ${formatDate(treatment.visitDate)}`}
                         </p>
                       </div>
@@ -1279,6 +1758,15 @@ export function ToothDetailPage({
                     >
                       <Plus className="w-3 h-3 mr-1" />
                       Pediatric
+                    </Button>
+                    <Button
+                      onClick={() => handleAddNewTreatment('Prosthetics')}
+                      size="sm"
+                      variant="outline"
+                      className="border-[#1E6E97] text-[#1E6E97] hover:bg-[#E8F4F8]"
+                    >
+                      <Plus className="w-3 h-3 mr-1" />
+                      Prosthetic Dentistry
                     </Button>
                     <Button
                       onClick={() => setShowAddTreatmentMenu(false)}

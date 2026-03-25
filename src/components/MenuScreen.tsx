@@ -30,7 +30,7 @@ export function MenuScreen({ onNavigate }: MenuScreenProps) {
     <div className="bg-[#FAFAFA] min-h-screen pb-[100px]">
       {/* Header */}
       <div className="bg-white border-b border-[#D9DEE2] px-5 pt-5 pb-5">
-        <div className="max-w-[430px] mx-auto">
+        <div className="max-w-[430px] md:max-w-[768px] lg:max-w-[1024px] mx-auto">
           <h1 className="font-medium text-[19px] text-[#1C1C1C] mb-5">Menu</h1>
 
           {/* Profile Card */}
@@ -51,7 +51,7 @@ export function MenuScreen({ onNavigate }: MenuScreenProps) {
       </div>
 
       {/* Menu Sections */}
-      <div className="px-5 py-6 max-w-[430px] mx-auto space-y-8">
+      <div className="px-5 py-6 max-w-[430px] md:max-w-[768px] lg:max-w-[1024px] mx-auto space-y-8">
         {menuSections.map((section) => (
           <div key={section.title}>
             <h2 className="font-semibold text-xs text-[#8AA4B1] uppercase tracking-wider mb-3 px-1">

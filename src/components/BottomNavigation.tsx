@@ -79,7 +79,7 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200">
-      <div className="w-full max-w-[430px] mx-auto">
+      <div className="w-full max-w-[430px] md:max-w-[768px] lg:max-w-[1024px] mx-auto">
         {/* Tab Bar */}
         <div className="flex items-center justify-around px-4 pt-3 pb-1">
           {tabs.map((tab) => {

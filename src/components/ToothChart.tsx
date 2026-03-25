@@ -1,18 +1,33 @@
 import Frame from '../imports/Frame';
 import svgPaths from '../imports/svg-81glllw5g3';
 
+interface BridgeGroup {
+  id: string;
+  teeth: { toothNumber: number; role: 'abutment' | 'pontic'; treatmentId: string }[];
+  createdAt: string;
+}
+
 interface ToothChartProps {
   selectedTeeth: number[];
   activeTooth?: number;
   onToothToggle: (toothNumber: number) => void;
+  bridgeGroups?: Record<string, BridgeGroup>;
+  treatmentColorMap?: Record<number, string>; // toothNumber -> treatment type color
 }
 
-export function ToothChart({ selectedTeeth, activeTooth, onToothToggle }: ToothChartProps) {
+export function ToothChart({ selectedTeeth, activeTooth, onToothToggle, bridgeGroups = {} }: ToothChartProps) {
   const isSelected = (toothNum: number) => selectedTeeth.includes(toothNum);
   const isActive = (toothNum: number) => activeTooth === toothNum;
 
+  // Build a map: toothNumber -> { groupId, role }
+  const bridgeToothMap: Record<number, { groupId: string; role: 'abutment' | 'pontic' }> = {};
+  Object.values(bridgeGroups).forEach(group => {
+    group.teeth.forEach(t => {
+      bridgeToothMap[t.toothNumber] = { groupId: group.id, role: t.role };
+    });
+  });
+
   // Tooth mapping with their SVG paths and positions
-  // Mapped from Frame.tsx Groups to tooth numbers
   const teethData: Record<number, { path: string; viewBox: string; inset: string }> = {
     // Upper Right (18-11)
     18: { path: svgPaths.p32649e00, viewBox: "0 0 15 12", inset: "inset-[39.43%_81.39%_53.32%_3.41%]" },
@@ -33,23 +48,23 @@ export function ToothChart({ selectedTeeth, activeTooth, onToothToggle }: ToothC
     27: { path: svgPaths.p2e9a9500, viewBox: "0 0 14 12", inset: "inset-[31.87%_4.39%_60.88%_80.76%]" },
     28: { path: svgPaths.p23868d10, viewBox: "0 0 15 12", inset: "inset-[39.43%_3.41%_53.32%_81.39%]" },
     // Lower Left (48-41) - Group27-Group32
-    48: { path: svgPaths.p2cd96100, viewBox: "0 0 15 12", inset: "inset-[56.16%_83.65%_36.51%_1.13%]" }, // Group27
-    47: { path: svgPaths.p28212e00, viewBox: "0 0 14 12", inset: "inset-[63.68%_82.55%_28.97%_2.63%]" }, // Group28
-    46: { path: svgPaths.p16521500, viewBox: "0 0 14 12", inset: "inset-[70.74%_80.08%_21.63%_5.68%]" }, // Group29
-    45: { path: svgPaths.p2a3c5c00, viewBox: "0 0 13 10", inset: "inset-[77.58%_76.61%_16.03%_9.95%]" }, // Group33
-    44: { path: svgPaths.p25ee3880, viewBox: "0 0 13 11", inset: "inset-[82.59%_72.18%_10.77%_14.81%]" }, // Group30
-    43: { path: svgPaths.p3fedce80, viewBox: "0 0 11 11", inset: "inset-[87.06%_66.1%_5.88%_22.28%]" }, // Group26
-    42: { path: svgPaths.p237e6b80, viewBox: "0 0 10 11", inset: "inset-[90.66%_59.32%_2.32%_30.29%]" }, // Group31
-    41: { path: svgPaths.p33949900, viewBox: "0 0 9 11", inset: "inset-[92.51%_50.39%_0.69%_40.03%]" }, // Group32
+    48: { path: svgPaths.p2cd96100, viewBox: "0 0 15 12", inset: "inset-[56.16%_83.65%_36.51%_1.13%]" },
+    47: { path: svgPaths.p28212e00, viewBox: "0 0 14 12", inset: "inset-[63.68%_82.55%_28.97%_2.63%]" },
+    46: { path: svgPaths.p16521500, viewBox: "0 0 14 12", inset: "inset-[70.74%_80.08%_21.63%_5.68%]" },
+    45: { path: svgPaths.p2a3c5c00, viewBox: "0 0 13 10", inset: "inset-[77.58%_76.61%_16.03%_9.95%]" },
+    44: { path: svgPaths.p25ee3880, viewBox: "0 0 13 11", inset: "inset-[82.59%_72.18%_10.77%_14.81%]" },
+    43: { path: svgPaths.p3fedce80, viewBox: "0 0 11 11", inset: "inset-[87.06%_66.1%_5.88%_22.28%]" },
+    42: { path: svgPaths.p237e6b80, viewBox: "0 0 10 11", inset: "inset-[90.66%_59.32%_2.32%_30.29%]" },
+    41: { path: svgPaths.p33949900, viewBox: "0 0 9 11", inset: "inset-[92.51%_50.39%_0.69%_40.03%]" },
     // Lower Right (31-38) - Group24-Group19
-    31: { path: svgPaths.p14efe400, viewBox: "0 0 9 11", inset: "inset-[92.5%_40.03%_0.69%_50.39%]" }, // Group24
-    32: { path: svgPaths.p365fb300, viewBox: "0 0 10 11", inset: "inset-[90.66%_30.29%_2.32%_59.32%]" }, // Group23
-    33: { path: svgPaths.p34e4e500, viewBox: "0 0 11 11", inset: "inset-[87.06%_22.28%_5.88%_66.1%]" }, // Group18
-    34: { path: svgPaths.p2c29ad00, viewBox: "0 0 13 11", inset: "inset-[82.59%_14.81%_10.77%_72.18%]" }, // Group22
-    35: { path: svgPaths.p819fc00, viewBox: "0 0 13 10", inset: "inset-[77.58%_9.95%_16.03%_76.61%]" }, // Group25
-    36: { path: svgPaths.p3441ea00, viewBox: "0 0 14 12", inset: "inset-[70.74%_5.67%_21.63%_80.09%]" }, // Group21
-    37: { path: svgPaths.pb687d00, viewBox: "0 0 14 12", inset: "inset-[63.68%_2.63%_28.97%_82.55%]" }, // Group20
-    38: { path: svgPaths.p2a348300, viewBox: "0 0 15 12", inset: "inset-[56.16%_1.13%_36.51%_83.65%]" }, // Group19
+    31: { path: svgPaths.p14efe400, viewBox: "0 0 9 11", inset: "inset-[92.5%_40.03%_0.69%_50.39%]" },
+    32: { path: svgPaths.p365fb300, viewBox: "0 0 10 11", inset: "inset-[90.66%_30.29%_2.32%_59.32%]" },
+    33: { path: svgPaths.p34e4e500, viewBox: "0 0 11 11", inset: "inset-[87.06%_22.28%_5.88%_66.1%]" },
+    34: { path: svgPaths.p2c29ad00, viewBox: "0 0 13 11", inset: "inset-[82.59%_14.81%_10.77%_72.18%]" },
+    35: { path: svgPaths.p819fc00, viewBox: "0 0 13 10", inset: "inset-[77.58%_9.95%_16.03%_76.61%]" },
+    36: { path: svgPaths.p3441ea00, viewBox: "0 0 14 12", inset: "inset-[70.74%_5.67%_21.63%_80.09%]" },
+    37: { path: svgPaths.pb687d00, viewBox: "0 0 14 12", inset: "inset-[63.68%_2.63%_28.97%_82.55%]" },
+    38: { path: svgPaths.p2a348300, viewBox: "0 0 15 12", inset: "inset-[56.16%_1.13%_36.51%_83.65%]" },
   };
 
   // Helper to parse inset values
@@ -66,7 +81,46 @@ export function ToothChart({ selectedTeeth, activeTooth, onToothToggle }: ToothC
     return { top: 0, right: 0, bottom: 0, left: 0 };
   };
 
+  // Get center position for a tooth (for bridge arcs)
+  const getToothCenter = (toothNum: number) => {
+    const td = teethData[toothNum];
+    if (!td) return { cx: 0, cy: 0 };
+    const inset = parseInset(td.inset);
+    const cx = ((inset.left + (100 - inset.left - inset.right) / 2) / 100) * 93;
+    const cy = ((inset.top + (100 - inset.top - inset.bottom) / 2) / 100) * 153;
+    return { cx, cy };
+  };
+
+  const isUpperTooth = (toothNum: number) => toothNum >= 11 && toothNum <= 28;
+
   const allTeeth = [18, 17, 16, 15, 14, 13, 12, 11, 21, 22, 23, 24, 25, 26, 27, 28, 48, 47, 46, 45, 44, 43, 42, 41, 31, 32, 33, 34, 35, 36, 37, 38];
+
+  // Build bridge arcs: for each bridge group, draw connecting arcs between consecutive teeth
+  const bridgeArcs: { key: string; path: string }[] = [];
+  Object.values(bridgeGroups).forEach(group => {
+    if (group.teeth.length < 2) return;
+    // Sort teeth by position in the arch
+    const sorted = [...group.teeth].sort((a, b) => {
+      return allTeeth.indexOf(a.toothNumber) - allTeeth.indexOf(b.toothNumber);
+    });
+
+    for (let i = 0; i < sorted.length - 1; i++) {
+      const from = getToothCenter(sorted[i].toothNumber);
+      const to = getToothCenter(sorted[i + 1].toothNumber);
+      const isUpper = isUpperTooth(sorted[i].toothNumber);
+
+      // Quadratic bezier arc: curves away from teeth
+      const midX = (from.cx + to.cx) / 2;
+      const midY = (from.cy + to.cy) / 2;
+      const offset = isUpper ? -4 : 4;
+      const ctrlY = midY + offset;
+
+      bridgeArcs.push({
+        key: `${group.id}-${i}`,
+        path: `M ${from.cx} ${from.cy} Q ${midX} ${ctrlY} ${to.cx} ${to.cy}`,
+      });
+    }
+  });
 
   return (
     <div className="w-full pb-2">
@@ -74,20 +128,28 @@ export function ToothChart({ selectedTeeth, activeTooth, onToothToggle }: ToothC
         <div className="relative w-full max-w-md aspect-[93/153]">
           {/* Figma Frame Background */}
           <Frame />
-          
+
           {/* SVG-based Interactive Overlay - Matches exact tooth shapes */}
-          <svg 
-            className="absolute inset-0 w-full h-full pointer-events-none" 
+          <svg
+            className="absolute inset-0 w-full h-full pointer-events-none"
             viewBox="0 0 93 153"
             preserveAspectRatio="xMidYMid meet"
           >
+            {/* SVG defs for pontic pattern */}
+            <defs>
+              <pattern id="pontic-stripe" width="3" height="3" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+                <line x1="0" y1="0" x2="0" y2="3" stroke="rgba(245, 158, 11, 0.5)" strokeWidth="1.5" />
+              </pattern>
+            </defs>
+
             {allTeeth.map((toothNum) => {
-              const toothData = teethData[toothNum];
-              if (!toothData) return null;
+              const toothData_entry = teethData[toothNum];
+              if (!toothData_entry) return null;
 
               const selected = isSelected(toothNum);
               const active = isActive(toothNum);
-              const inset = parseInset(toothData.inset);
+              const bridgeInfo = bridgeToothMap[toothNum];
+              const inset = parseInset(toothData_entry.inset);
 
               // Calculate position and size from inset values
               const x = (inset.left / 100) * 93;
@@ -96,7 +158,7 @@ export function ToothChart({ selectedTeeth, activeTooth, onToothToggle }: ToothC
               const height = ((100 - inset.top - inset.bottom) / 100) * 153;
 
               // Parse viewBox to get path dimensions
-              const viewBoxParts = toothData.viewBox.split(' ').map(Number);
+              const viewBoxParts = toothData_entry.viewBox.split(' ').map(Number);
               const pathWidth = viewBoxParts[2];
               const pathHeight = viewBoxParts[3];
 
@@ -107,8 +169,31 @@ export function ToothChart({ selectedTeeth, activeTooth, onToothToggle }: ToothC
               let fillColor = 'rgba(99, 102, 241, 0)';
               let strokeColor = 'rgba(99, 102, 241, 0)';
               let strokeWidth = 0;
+              let usePonticPattern = false;
 
-              if (active && selected) {
+              // Bridge teeth: amber coloring
+              if (bridgeInfo) {
+                if (bridgeInfo.role === 'pontic') {
+                  fillColor = 'url(#pontic-stripe)';
+                  usePonticPattern = true;
+                  strokeColor = 'rgba(245, 158, 11, 0.8)';
+                  strokeWidth = 0.3;
+                } else {
+                  // Abutment
+                  fillColor = 'rgba(245, 158, 11, 0.3)';
+                  strokeColor = 'rgba(245, 158, 11, 1)';
+                  strokeWidth = 0.3;
+                }
+
+                // Override if also active
+                if (active) {
+                  strokeColor = 'rgba(245, 158, 11, 1)';
+                  strokeWidth = 0.5;
+                  if (!usePonticPattern) {
+                    fillColor = 'rgba(245, 158, 11, 0.45)';
+                  }
+                }
+              } else if (active && selected) {
                 fillColor = 'rgba(99, 102, 241, 0.4)';
                 strokeColor = 'rgba(99, 102, 241, 1)';
                 strokeWidth = 0.4;
@@ -126,10 +211,10 @@ export function ToothChart({ selectedTeeth, activeTooth, onToothToggle }: ToothC
                 <g key={toothNum} transform={`translate(${x}, ${y})`}>
                   <g transform={`scale(${scaleX}, ${scaleY})`}>
                     <path
-                      d={toothData.path}
+                      d={toothData_entry.path}
                       fill={fillColor}
                       stroke={strokeColor}
-                      strokeWidth={strokeWidth / scaleX}
+                      strokeWidth={strokeWidth > 0 ? strokeWidth / scaleX : undefined}
                       className="pointer-events-auto cursor-pointer transition-all duration-200 hover:fill-[rgba(99,102,241,0.15)] hover:stroke-[rgba(99,102,241,0.5)] hover:stroke-[0.15]"
                       style={{
                         strokeWidth: strokeWidth > 0 ? `${strokeWidth / scaleX}` : undefined,
@@ -140,17 +225,31 @@ export function ToothChart({ selectedTeeth, activeTooth, onToothToggle }: ToothC
                 </g>
               );
             })}
+
+            {/* Bridge connecting arcs */}
+            {bridgeArcs.map(arc => (
+              <path
+                key={arc.key}
+                d={arc.path}
+                fill="none"
+                stroke="rgba(245, 158, 11, 0.7)"
+                strokeWidth="0.6"
+                strokeDasharray="1.5 0.8"
+                className="pointer-events-none"
+              />
+            ))}
           </svg>
 
           {/* Tooth number labels - separate layer */}
           <div className="absolute inset-0 pointer-events-none">
             {allTeeth.map((toothNum) => {
-              const toothData = teethData[toothNum];
-              if (!toothData) return null;
+              const toothData_entry = teethData[toothNum];
+              if (!toothData_entry) return null;
 
               const selected = isSelected(toothNum);
               const active = isActive(toothNum);
-              const inset = parseInset(toothData.inset);
+              const bridgeInfo = bridgeToothMap[toothNum];
+              const inset = parseInset(toothData_entry.inset);
 
               const left = inset.left + (100 - inset.left - inset.right) / 2;
               const top = inset.top + (100 - inset.top - inset.bottom) / 2;
@@ -167,7 +266,9 @@ export function ToothChart({ selectedTeeth, activeTooth, onToothToggle }: ToothC
                 >
                   <span
                     className={`text-[11px] whitespace-nowrap transition-all duration-200 ${
-                      active || selected
+                      bridgeInfo
+                        ? 'text-amber-600 font-bold'
+                        : active || selected
                         ? 'text-[#6366F1] font-bold'
                         : 'text-[#475569] font-semibold'
                     }`}
@@ -185,7 +286,7 @@ export function ToothChart({ selectedTeeth, activeTooth, onToothToggle }: ToothC
 
           {/* Labels */}
           <div className="absolute top-2 left-0 right-0 text-center">
-            
+
           </div>
 
         </div>
