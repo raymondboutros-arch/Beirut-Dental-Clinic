@@ -191,8 +191,8 @@ export function ToothChart({ selectedTeeth, activeTooth, onToothToggle, bridgeGr
               const surfaces = surfaceMap[toothNum];
               const cx = x + width / 2;
               const cy = y + height / 2;
-              const sRo = Math.max(width, height) * 0.72;
-              const sRi = Math.min(width, height) * 0.34;
+              const sRo = Math.min(width, height) * 0.52;
+              const sRi = Math.min(width, height) * 0.28;
               const charted = new Set((surfaces?.[0] || '').split(''));
               const sLine = active ? 'rgba(15, 94, 96, 0.9)' : 'rgba(15, 94, 96, 0.5)';
               const sFill = 'rgba(64, 192, 195, 0.55)';
@@ -238,9 +238,10 @@ export function ToothChart({ selectedTeeth, activeTooth, onToothToggle, bridgeGr
                 strokeWidth = 0.2;
               }
 
-              // With a surface diagram, let it carry the tint (drop the blanket fill)
+              // With a surface diagram, let it carry the tint (drop the blanket fill + outline)
               if (surfaces && surfaces.length > 0 && !bridgeInfo && !active) {
                 fillColor = 'rgba(64, 192, 195, 0)';
+                strokeColor = 'rgba(64, 192, 195, 0)';
               }
 
               return (
