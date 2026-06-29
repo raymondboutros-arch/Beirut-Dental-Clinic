@@ -18,7 +18,7 @@ export function MobileHeader({ onMenuClick }: MobileHeaderProps) {
       </Button>
       
       <div className="flex items-center gap-2">
-        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#6366F1] to-[#14B8A6] flex items-center justify-center">
+        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#40C0C3] to-[#14B8A6] flex items-center justify-center">
           <div className="w-5 h-5 border-2 border-white rounded"></div>
         </div>
         <span className="text-gray-900">Treatment Plan</span>

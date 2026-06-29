@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import svgPaths from "../imports/svg-95m1j3vtbe";
+import bdcLogoWhite from "../assets/bdc-logo-white.svg";
 import imgRectangle3345 from "figma:asset/136a54b5bc1624f8d1393b42a1a8c77d82a3e5fe.png";
 import imgSmile from "figma:asset/ec5c186881609cb136cd58b01e8b972c2e00dedd.png";
 
@@ -35,7 +35,7 @@ function Depth3Frame({ onClick }: { onClick?: () => void }) {
   return (
     <button
       onClick={onClick}
-      className="basis-0 bg-[#027ba4] grow h-[48px] max-w-[480px] min-h-px min-w-[84px] relative rounded-[24px] shrink-0 hover:bg-[#026a8f] transition-colors cursor-pointer"
+      className="basis-0 bg-[#26C4B5] grow h-[48px] max-w-[480px] min-h-px min-w-[84px] relative rounded-[24px] shrink-0 hover:bg-[#1FA99B] transition-colors cursor-pointer"
       data-name="Depth 3, Frame 0"
     >
       <div className="flex flex-row items-center justify-center max-w-inherit min-w-inherit overflow-clip rounded-[inherit] size-full">
@@ -57,64 +57,8 @@ function Depth2Frame({ onClick }: { onClick?: () => void }) {
 
 function Layer() {
   return (
-    <div className="absolute h-[84px] sm:h-[100px] left-1/2 top-[80px] sm:top-[120px] translate-x-[-50%] w-[140px] sm:w-[160px] z-10" data-name="Layer_1">
-      <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 140 84">
-        <g clipPath="url(#clip0_98_804)" id="Layer_1">
-          <path d={svgPaths.p338a8400} fill="var(--fill-0, white)" id="Vector" />
-          <path d={svgPaths.p3c804c00} fill="var(--fill-0, white)" id="Vector_2" />
-          <path d={svgPaths.p23d3ac00} fill="var(--fill-0, white)" id="Vector_3" />
-          <path d={svgPaths.pa89d00} fill="var(--fill-0, white)" id="Vector_4" />
-          <path d={svgPaths.p1f51ba00} fill="var(--fill-0, white)" id="Vector_5" />
-          <path d={svgPaths.p2a0f5240} fill="var(--fill-0, white)" id="Vector_6" />
-          <path d={svgPaths.p2428a680} fill="var(--fill-0, white)" id="Vector_7" />
-          <path d={svgPaths.p3cd080f0} fill="var(--fill-0, white)" id="Vector_8" />
-          <g id="Group">
-            <path d={svgPaths.p14008500} fill="var(--fill-0, white)" id="Vector_9" />
-            <path d={svgPaths.p2e450f80} fill="var(--fill-0, white)" id="Vector_10" />
-            <path d={svgPaths.p1b656700} fill="var(--fill-0, white)" id="Vector_11" />
-            <path d={svgPaths.p1a96df00} fill="var(--fill-0, white)" id="Vector_12" />
-            <path d={svgPaths.p266db400} fill="var(--fill-0, white)" id="Vector_13" />
-            <path d={svgPaths.p3aec0a00} fill="var(--fill-0, white)" id="Vector_14" />
-            <path d={svgPaths.p26459200} fill="var(--fill-0, white)" id="Vector_15" />
-            <path d={svgPaths.pabe2880} fill="var(--fill-0, white)" id="Vector_16" />
-            <path d={svgPaths.p2fb89c00} fill="var(--fill-0, white)" id="Vector_17" />
-            <path d={svgPaths.p139c8180} fill="var(--fill-0, white)" id="Vector_18" />
-            <path d={svgPaths.p2769c3c0} fill="var(--fill-0, white)" id="Vector_19" />
-            <path d={svgPaths.p55d6e80} fill="var(--fill-0, white)" id="Vector_20" />
-            <path d={svgPaths.p1eda4570} fill="var(--fill-0, white)" id="Vector_21" />
-            <path d={svgPaths.p1d56600} fill="var(--fill-0, white)" id="Vector_22" />
-            <path d={svgPaths.p81b2000} fill="var(--fill-0, white)" id="Vector_23" />
-            <path d={svgPaths.p23d30800} fill="var(--fill-0, white)" id="Vector_24" />
-            <path d={svgPaths.p128b1980} fill="var(--fill-0, white)" id="Vector_25" />
-            <path d={svgPaths.p13256f30} fill="var(--fill-0, white)" id="Vector_26" />
-          </g>
-          <g id="Group_2">
-            <path d={svgPaths.p34727300} fill="var(--fill-0, white)" id="Vector_27" />
-            <path d={svgPaths.p438da00} fill="var(--fill-0, white)" id="Vector_28" />
-            <path d={svgPaths.p249b1600} fill="var(--fill-0, white)" id="Vector_29" />
-            <path d={svgPaths.pc1f0d00} fill="var(--fill-0, white)" id="Vector_30" />
-            <path d={svgPaths.p28d81a80} fill="var(--fill-0, white)" id="Vector_31" />
-            <path d={svgPaths.p2cf97080} fill="var(--fill-0, white)" id="Vector_32" />
-            <path d={svgPaths.p174e1a00} fill="var(--fill-0, white)" id="Vector_33" />
-            <path d={svgPaths.p1ce01100} fill="var(--fill-0, white)" id="Vector_34" />
-            <path d={svgPaths.p3cb06800} fill="var(--fill-0, white)" id="Vector_35" />
-            <path d={svgPaths.p91adb00} fill="var(--fill-0, white)" id="Vector_36" />
-            <path d={svgPaths.p2425fe00} fill="var(--fill-0, white)" id="Vector_37" />
-            <path d={svgPaths.pf5c00} fill="var(--fill-0, white)" id="Vector_38" />
-            <path d={svgPaths.p12597c70} fill="var(--fill-0, white)" id="Vector_39" />
-            <path d={svgPaths.p739c580} fill="var(--fill-0, white)" id="Vector_40" />
-            <path d={svgPaths.pb740d00} fill="var(--fill-0, white)" id="Vector_41" />
-            <path d={svgPaths.p2e06f300} fill="var(--fill-0, white)" id="Vector_42" />
-            <path d={svgPaths.p2881cc00} fill="var(--fill-0, white)" id="Vector_43" />
-            <path d={svgPaths.p29219900} fill="var(--fill-0, white)" id="Vector_44" />
-          </g>
-        </g>
-        <defs>
-          <clipPath id="clip0_98_804">
-            <rect fill="white" height="84" width="140" />
-          </clipPath>
-        </defs>
-      </svg>
+    <div className="absolute left-1/2 top-[72px] sm:top-[110px] translate-x-[-50%] w-[160px] sm:w-[200px] z-10" data-name="Logo">
+      <img src={bdcLogoWhite} alt="Beirut Dental Clinic" className="block w-full h-auto" />
     </div>
   );
 }

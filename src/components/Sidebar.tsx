@@ -19,7 +19,7 @@ export function Sidebar({ isMobileOpen = false, onMobileClose }: SidebarProps) {
     <div className="h-full bg-white flex flex-col p-4 border-r border-gray-200">
       {/* Logo */}
       <div className="flex items-center gap-3 mb-8">
-        <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6366F1] to-[#14B8A6] flex items-center justify-center">
+        <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#40C0C3] to-[#14B8A6] flex items-center justify-center">
           <div className="w-6 h-6 border-2 border-white rounded"></div>
         </div>
         <span className="text-gray-900">Dent Dashboard</span>
@@ -33,7 +33,7 @@ export function Sidebar({ isMobileOpen = false, onMobileClose }: SidebarProps) {
             onClick={() => onMobileClose?.()}
             className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${
               item.active
-                ? 'bg-[#6366F1]/10 text-[#6366F1] border border-[#6366F1]/20'
+                ? 'bg-[#40C0C3]/10 text-[#40C0C3] border border-[#40C0C3]/20'
                 : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
             }`}
           >

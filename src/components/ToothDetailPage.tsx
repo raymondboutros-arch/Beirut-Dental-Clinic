@@ -14,6 +14,7 @@ import { PeriodonticsForm, PeriodonticsPreview, type PeriodonticsFields, type Pe
 import { OrthodonticsForm, OrthodonticsPreview, type OrthodonticsFields, type OrthoSubCategory, ORTHO_SUB_CATEGORIES } from './OrthodonticsForm';
 import { PediatricForm, PediatricPreview, type PediatricFields, type PedoSubCategory, PEDO_SUB_CATEGORIES } from './PediatricForm';
 import { ProstheticsForm, ProstheticsPreview, type ProstheticsFields, type ProsthSubCategory, PROSTH_SUB_CATEGORIES } from './ProstheticsForm';
+import { ToothSurfaceSelector } from './ToothSurfaceSelector';
 
 interface CompositeToothData {
   id: string;
@@ -410,11 +411,20 @@ export function ToothDetailPage({
             {getAvailableSurfaces((treatment as CompositeToothData).class).length > 0 && (
               <div>
                 <Label className="text-gray-500 text-xs">Surfaces</Label>
-                <p className="text-gray-900 mt-1">
-                  {(treatment as CompositeToothData).surfaces && (treatment as CompositeToothData).surfaces.length > 0
-                    ? (treatment as CompositeToothData).surfaces.join(', ')
-                    : 'None selected'}
-                </p>
+                <div className="mt-1 flex items-center gap-3">
+                  <ToothSurfaceSelector
+                    availableSurfaces={getAvailableSurfaces((treatment as CompositeToothData).class)}
+                    selected={(treatment as CompositeToothData).surfaces || []}
+                    onChange={() => {}}
+                    readOnly
+                    size={56}
+                  />
+                  <p className="text-gray-900">
+                    {(treatment as CompositeToothData).surfaces && (treatment as CompositeToothData).surfaces.length > 0
+                      ? (treatment as CompositeToothData).surfaces.join(', ')
+                      : 'None selected'}
+                  </p>
+                </div>
               </div>
             )}
 
@@ -682,7 +692,7 @@ export function ToothDetailPage({
                 initBridgeEditSelection(treatment as ProstheticsToothData);
               }
             }}
-            className="text-[#6366F1] border-[#6366F1] hover:bg-[#6366F1]/10"
+            className="text-[#40C0C3] border-[#40C0C3] hover:bg-[#40C0C3]/10"
           >
             <Edit2 className="w-3 h-3 mr-1" />
             Edit
@@ -766,23 +776,24 @@ export function ToothDetailPage({
             {getAvailableSurfaces((treatment as CompositeToothData).class).length > 0 && (
               <div className="space-y-2">
                 <Label className="text-gray-700">Surfaces</Label>
-                <div className="space-y-2">
-                  {getAvailableSurfaces((treatment as CompositeToothData).class).map((surface) => (
-                    <div key={surface} className="flex items-center gap-2">
-                      <Checkbox
-                        id={`${treatment.id}-surface-${surface}`}
-                        checked={((treatment as CompositeToothData).surfaces || []).includes(surface)}
-                        onCheckedChange={() => handleSurfaceToggle(treatment.id, treatment as CompositeToothData, surface)}
-                        className="border-gray-300 data-[state=checked]:bg-[#6366F1] data-[state=checked]:border-[#6366F1]"
-                      />
-                      <Label
-                        htmlFor={`${treatment.id}-surface-${surface}`}
-                        className="text-gray-700 cursor-pointer"
-                      >
-                        {surface}
-                      </Label>
-                    </div>
-                  ))}
+                <div className="flex items-center gap-4 rounded-xl bg-[#F6F1E7] border border-[#E0D8C8] p-3">
+                  <ToothSurfaceSelector
+                    availableSurfaces={getAvailableSurfaces((treatment as CompositeToothData).class)}
+                    selected={(treatment as CompositeToothData).surfaces || []}
+                    onChange={(surfaces) => onTreatmentUpdate(toothNumber, treatment.id, { surfaces })}
+                  />
+                  <div className="space-y-1">
+                    <p className="text-[#26C4B5]">
+                      {(treatment as CompositeToothData).surfaces && (treatment as CompositeToothData).surfaces.length > 0
+                        ? (treatment as CompositeToothData).surfaces.join(', ')
+                        : 'Tap a surface'}
+                    </p>
+                    <p className="text-[#8A8378] text-xs">
+                      {getAvailableSurfaces((treatment as CompositeToothData).class).length > 1
+                        ? `Options: ${getAvailableSurfaces((treatment as CompositeToothData).class).join(' · ')}`
+                        : 'Occlusal'}
+                    </p>
+                  </div>
                 </div>
               </div>
             )}
@@ -797,7 +808,7 @@ export function ToothDetailPage({
                       id={`${treatment.id}-depth-${flag}`}
                       checked={((treatment as CompositeToothData).depthFlags || []).includes(flag)}
                       onCheckedChange={() => handleDepthFlagToggle(treatment.id, treatment as CompositeToothData, flag)}
-                      className="border-gray-300 data-[state=checked]:bg-[#6366F1] data-[state=checked]:border-[#6366F1]"
+                      className="border-gray-300 data-[state=checked]:bg-[#40C0C3] data-[state=checked]:border-[#40C0C3]"
                     />
                     <Label
                       htmlFor={`${treatment.id}-depth-${flag}`}
@@ -940,7 +951,7 @@ export function ToothDetailPage({
                     onClick={() => onTreatmentUpdate(toothNumber, treatment.id, { canalCount: count })}
                     className={`${
                       (treatment as RootCanalToothData).canalCount === count
-                        ? 'bg-[#6366F1] text-white border-[#6366F1] hover:bg-[#5558E3] hover:text-white'
+                        ? 'bg-[#40C0C3] text-white border-[#40C0C3] hover:bg-[#2EA6A9] hover:text-white'
                         : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'
                     }`}
                   >
@@ -1005,7 +1016,7 @@ export function ToothDetailPage({
                       onClick={() => onTreatmentUpdate(toothNumber, treatment.id, { extractionType: type })}
                       className={`${
                         (treatment as SurgeryToothData).extractionType === type
-                          ? 'bg-[#6366F1] text-white border-[#6366F1] hover:bg-[#5558E3] hover:text-white'
+                          ? 'bg-[#40C0C3] text-white border-[#40C0C3] hover:bg-[#2EA6A9] hover:text-white'
                           : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'
                       }`}
                     >
@@ -1032,7 +1043,7 @@ export function ToothDetailPage({
                         onClick={() => onTreatmentUpdate(toothNumber, treatment.id, { graftProcedure: proc })}
                         className={`${
                           (treatment as SurgeryToothData).graftProcedure === proc
-                            ? 'bg-[#6366F1] text-white border-[#6366F1] hover:bg-[#5558E3] hover:text-white'
+                            ? 'bg-[#40C0C3] text-white border-[#40C0C3] hover:bg-[#2EA6A9] hover:text-white'
                             : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'
                         }`}
                       >
@@ -1055,7 +1066,7 @@ export function ToothDetailPage({
                         onClick={() => onTreatmentUpdate(toothNumber, treatment.id, { graftType: type, graftBrand: undefined, membraneType: type === 'Membrane' ? 'Collagen Membrane' : undefined, sinusApproach: undefined, sinusImplant: undefined })}
                         className={`${
                           (treatment as SurgeryToothData).graftType === type
-                            ? 'bg-[#6366F1] text-white border-[#6366F1] hover:bg-[#5558E3] hover:text-white'
+                            ? 'bg-[#40C0C3] text-white border-[#40C0C3] hover:bg-[#2EA6A9] hover:text-white'
                             : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'
                         }`}
                       >
@@ -1126,7 +1137,7 @@ export function ToothDetailPage({
                             onClick={() => onTreatmentUpdate(toothNumber, treatment.id, { sinusApproach: approach, sinusImplant: approach === 'Internal (Crestal)' ? undefined : (treatment as SurgeryToothData).sinusImplant })}
                             className={`${
                               (treatment as SurgeryToothData).sinusApproach === approach
-                                ? 'bg-[#6366F1] text-white border-[#6366F1] hover:bg-[#5558E3] hover:text-white'
+                                ? 'bg-[#40C0C3] text-white border-[#40C0C3] hover:bg-[#2EA6A9] hover:text-white'
                                 : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'
                             }`}
                           >
@@ -1149,7 +1160,7 @@ export function ToothDetailPage({
                               onClick={() => onTreatmentUpdate(toothNumber, treatment.id, { sinusImplant: opt })}
                               className={`${
                                 (treatment as SurgeryToothData).sinusImplant === opt
-                                  ? 'bg-[#6366F1] text-white border-[#6366F1] hover:bg-[#5558E3] hover:text-white'
+                                  ? 'bg-[#40C0C3] text-white border-[#40C0C3] hover:bg-[#2EA6A9] hover:text-white'
                                   : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'
                               }`}
                             >
@@ -1176,7 +1187,7 @@ export function ToothDetailPage({
                           onClick={() => onTreatmentUpdate(toothNumber, treatment.id, { membraneType: type })}
                           className={`${
                             (treatment as SurgeryToothData).membraneType === type
-                              ? 'bg-[#6366F1] text-white border-[#6366F1] hover:bg-[#5558E3] hover:text-white'
+                              ? 'bg-[#40C0C3] text-white border-[#40C0C3] hover:bg-[#2EA6A9] hover:text-white'
                               : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'
                           }`}
                         >
@@ -1203,7 +1214,7 @@ export function ToothDetailPage({
                       onClick={() => onTreatmentUpdate(toothNumber, treatment.id, { apicectomyTechnique: tech })}
                       className={`${
                         (treatment as SurgeryToothData).apicectomyTechnique === tech
-                          ? 'bg-[#6366F1] text-white border-[#6366F1] hover:bg-[#5558E3] hover:text-white'
+                          ? 'bg-[#40C0C3] text-white border-[#40C0C3] hover:bg-[#2EA6A9] hover:text-white'
                           : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'
                       }`}
                     >
@@ -1228,7 +1239,7 @@ export function ToothDetailPage({
                       onClick={() => onTreatmentUpdate(toothNumber, treatment.id, { frenectomyType: type })}
                       className={`${
                         (treatment as SurgeryToothData).frenectomyType === type
-                          ? 'bg-[#6366F1] text-white border-[#6366F1] hover:bg-[#5558E3] hover:text-white'
+                          ? 'bg-[#40C0C3] text-white border-[#40C0C3] hover:bg-[#2EA6A9] hover:text-white'
                           : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'
                       }`}
                     >
@@ -1254,7 +1265,7 @@ export function ToothDetailPage({
                         onClick={() => onTreatmentUpdate(toothNumber, treatment.id, { crownLengtheningScope: scope, crownLengtheningTeeth: scope === 'By Tooth' ? (treatment as SurgeryToothData).crownLengtheningTeeth : undefined })}
                         className={`${
                           (treatment as SurgeryToothData).crownLengtheningScope === scope
-                            ? 'bg-[#6366F1] text-white border-[#6366F1] hover:bg-[#5558E3] hover:text-white'
+                            ? 'bg-[#40C0C3] text-white border-[#40C0C3] hover:bg-[#2EA6A9] hover:text-white'
                             : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'
                         }`}
                       >
@@ -1443,19 +1454,19 @@ export function ToothDetailPage({
           >
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <RadioGroupItem value="100" id={`${treatment.id}-100`} className="border-gray-300 text-[#6366F1]" />
+                <RadioGroupItem value="100" id={`${treatment.id}-100`} className="border-gray-300 text-[#40C0C3]" />
                 <Label htmlFor={`${treatment.id}-100`} className="text-gray-700 cursor-pointer">
                   $100
                 </Label>
               </div>
               <div className="flex items-center gap-2">
-                <RadioGroupItem value="300" id={`${treatment.id}-300`} className="border-gray-300 text-[#6366F1]" />
+                <RadioGroupItem value="300" id={`${treatment.id}-300`} className="border-gray-300 text-[#40C0C3]" />
                 <Label htmlFor={`${treatment.id}-300`} className="text-gray-700 cursor-pointer">
                   $300
                 </Label>
               </div>
               <div className="flex items-center gap-2">
-                <RadioGroupItem value="custom" id={`${treatment.id}-custom`} className="border-gray-300 text-[#6366F1]" />
+                <RadioGroupItem value="custom" id={`${treatment.id}-custom`} className="border-gray-300 text-[#40C0C3]" />
                 <Label htmlFor={`${treatment.id}-custom`} className="text-gray-700 cursor-pointer">
                   Custom
                 </Label>
@@ -1480,7 +1491,7 @@ export function ToothDetailPage({
             <Button
               variant="ghost"
               size="sm"
-              className="h-7 w-7 p-0 text-gray-500 hover:text-[#6366F1] hover:bg-[#6366F1]/10"
+              className="h-7 w-7 p-0 text-gray-500 hover:text-[#40C0C3] hover:bg-[#40C0C3]/10"
               onClick={() => {
                 console.log('Voice recording activated for treatment:', treatment.id);
               }}
@@ -1500,7 +1511,7 @@ export function ToothDetailPage({
         <div className="flex gap-2 pt-3 border-t border-gray-200">
           <Button
             onClick={() => handleSaveTreatment(treatment)}
-            className="flex-1 bg-[#6366F1] hover:bg-[#5558E3] text-white shadow-[0_0_12px_rgba(99,102,241,0.3)]"
+            className="flex-1 bg-[#40C0C3] hover:bg-[#2EA6A9] text-white shadow-[0_0_12px_rgba(64,192,195,0.3)]"
           >
             {treatment.treatmentType === 'Prosthetics' && (treatment as ProstheticsToothData).subCategory === 'Bridge' && bridgeTeethSelection.length > 1 ? 'Save Bridge' : 'Save Treatment'}
           </Button>
@@ -1517,9 +1528,9 @@ export function ToothDetailPage({
   };
 
   return (
-    <div className="fixed inset-0 bg-[#FAFAFA] z-50 overflow-auto">
+    <div className="fixed inset-0 bg-[#F6F1E7] z-50 overflow-auto">
       {/* Header */}
-      <div className="bg-white border-b border-[#D9DEE2] sticky top-0 z-10">
+      <div className="bg-white border-b border-[#E0D8C8] sticky top-0 z-10">
         <div className="max-w-[430px] md:max-w-[768px] lg:max-w-[1024px] mx-auto px-5 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -1527,27 +1538,27 @@ export function ToothDetailPage({
                 variant="ghost"
                 size="sm"
                 onClick={onClose}
-                className="text-[#1C1C1C] hover:bg-gray-50 -ml-2"
+                className="text-[#231F20] hover:bg-gray-50 -ml-2"
               >
                 <ArrowLeft className="w-5 h-5" />
               </Button>
               <div>
                 <div className="flex items-center gap-2">
-                  <h1 className="text-[#1C1C1C] text-[19px] font-medium">Tooth {toothNumber}</h1>
+                  <h1 className="text-[#231F20] text-[19px] font-medium">Tooth {toothNumber}</h1>
                   {isSaved && (
-                    <Badge className="bg-[#E8F4F8] text-[#1E6E97] hover:bg-[#E8F4F8]">
+                    <Badge className="bg-[#E3F1F1] text-[#26C4B5] hover:bg-[#E3F1F1]">
                       {treatmentsList.length} {treatmentsList.length === 1 ? 'Treatment' : 'Treatments'}
                     </Badge>
                   )}
                 </div>
-                <p className="text-[#6A7279] text-sm">Treatment Records</p>
+                <p className="text-[#8A8378] text-sm">Treatment Records</p>
               </div>
             </div>
             <Button
               variant="ghost"
               size="sm"
               onClick={onClose}
-              className="text-[#8AA4B1] hover:text-[#1C1C1C]"
+              className="text-[#8A8378] hover:text-[#231F20]"
             >
               <X className="w-5 h-5" />
             </Button>
@@ -1559,13 +1570,13 @@ export function ToothDetailPage({
       <div className="max-w-[430px] md:max-w-[768px] lg:max-w-[1024px] mx-auto px-5 py-5 pb-[120px]">
         {treatmentsList.length === 0 ? (
           // No treatments
-          <div className="bg-white border border-[#D9DEE2] rounded-[16px] p-6 text-center">
-            <h3 className="text-[#1C1C1C] mb-2">No treatments yet</h3>
-            <p className="text-[#6A7279] mb-5 text-sm">Add a treatment to get started</p>
+          <div className="bg-white border border-[#E0D8C8] rounded-[16px] p-6 text-center">
+            <h3 className="text-[#231F20] mb-2">No treatments yet</h3>
+            <p className="text-[#8A8378] mb-5 text-sm">Add a treatment to get started</p>
             <div className="flex flex-wrap gap-2 justify-center">
               <Button
                 onClick={() => handleAddNewTreatment('Composite')}
-                className="bg-[#1E6E97] hover:bg-[#175A7A] text-white"
+                className="bg-[#26C4B5] hover:bg-[#1FA99B] text-white"
               >
                 <Plus className="w-4 h-4 mr-2" />
                 Restorative Dentistry
@@ -1573,7 +1584,7 @@ export function ToothDetailPage({
               <Button
                 onClick={() => handleAddNewTreatment('Implant')}
                 variant="outline"
-                className="border-[#1E6E97] text-[#1E6E97] hover:bg-[#E8F4F8]"
+                className="border-[#26C4B5] text-[#26C4B5] hover:bg-[#E3F1F1]"
               >
                 <Plus className="w-4 h-4 mr-2" />
                 Implant
@@ -1581,7 +1592,7 @@ export function ToothDetailPage({
               <Button
                 onClick={() => handleAddNewTreatment('Root Canal')}
                 variant="outline"
-                className="border-[#1E6E97] text-[#1E6E97] hover:bg-[#E8F4F8]"
+                className="border-[#26C4B5] text-[#26C4B5] hover:bg-[#E3F1F1]"
               >
                 <Plus className="w-4 h-4 mr-2" />
                 Root Canal
@@ -1589,7 +1600,7 @@ export function ToothDetailPage({
               <Button
                 onClick={() => handleAddNewTreatment('Surgery')}
                 variant="outline"
-                className="border-[#1E6E97] text-[#1E6E97] hover:bg-[#E8F4F8]"
+                className="border-[#26C4B5] text-[#26C4B5] hover:bg-[#E3F1F1]"
               >
                 <Plus className="w-4 h-4 mr-2" />
                 Surgery
@@ -1597,7 +1608,7 @@ export function ToothDetailPage({
               <Button
                 onClick={() => handleAddNewTreatment('Periodontics')}
                 variant="outline"
-                className="border-[#1E6E97] text-[#1E6E97] hover:bg-[#E8F4F8]"
+                className="border-[#26C4B5] text-[#26C4B5] hover:bg-[#E3F1F1]"
               >
                 <Plus className="w-4 h-4 mr-2" />
                 Periodontics
@@ -1605,7 +1616,7 @@ export function ToothDetailPage({
               <Button
                 onClick={() => handleAddNewTreatment('Orthodontics')}
                 variant="outline"
-                className="border-[#1E6E97] text-[#1E6E97] hover:bg-[#E8F4F8]"
+                className="border-[#26C4B5] text-[#26C4B5] hover:bg-[#E3F1F1]"
               >
                 <Plus className="w-4 h-4 mr-2" />
                 Orthodontics
@@ -1613,7 +1624,7 @@ export function ToothDetailPage({
               <Button
                 onClick={() => handleAddNewTreatment('Pediatric')}
                 variant="outline"
-                className="border-[#1E6E97] text-[#1E6E97] hover:bg-[#E8F4F8]"
+                className="border-[#26C4B5] text-[#26C4B5] hover:bg-[#E3F1F1]"
               >
                 <Plus className="w-4 h-4 mr-2" />
                 Pediatric
@@ -1621,7 +1632,7 @@ export function ToothDetailPage({
               <Button
                 onClick={() => handleAddNewTreatment('Prosthetics')}
                 variant="outline"
-                className="border-[#1E6E97] text-[#1E6E97] hover:bg-[#E8F4F8]"
+                className="border-[#26C4B5] text-[#26C4B5] hover:bg-[#E3F1F1]"
               >
                 <Plus className="w-4 h-4 mr-2" />
                 Prosthetic Dentistry
@@ -1636,7 +1647,7 @@ export function ToothDetailPage({
                 <AccordionItem 
                   key={treatment.id} 
                   value={treatment.id}
-                  className="bg-white border border-[#D9DEE2] rounded-[16px] mb-3"
+                  className="bg-white border border-[#E0D8C8] rounded-[16px] mb-3"
                 >
                   <AccordionTrigger className="px-4 py-3.5 hover:no-underline">
                     <div className="flex items-center gap-3 text-left w-full">
@@ -1694,13 +1705,13 @@ export function ToothDetailPage({
             {/* Add New Treatment Button */}
             <div className="relative">
               {showAddTreatmentMenu ? (
-                <div className="bg-white border border-[#D9DEE2] rounded-[16px] p-4">
-                  <p className="text-[#6A7279] mb-3 text-sm">Add new treatment:</p>
+                <div className="bg-white border border-[#E0D8C8] rounded-[16px] p-4">
+                  <p className="text-[#8A8378] mb-3 text-sm">Add new treatment:</p>
                   <div className="flex flex-wrap gap-2">
                     <Button
                       onClick={() => handleAddNewTreatment('Composite')}
                       size="sm"
-                      className="bg-[#1E6E97] hover:bg-[#175A7A] text-white"
+                      className="bg-[#26C4B5] hover:bg-[#1FA99B] text-white"
                     >
                       <Plus className="w-3 h-3 mr-1" />
                       Restorative Dentistry
@@ -1709,7 +1720,7 @@ export function ToothDetailPage({
                       onClick={() => handleAddNewTreatment('Implant')}
                       size="sm"
                       variant="outline"
-                      className="border-[#1E6E97] text-[#1E6E97] hover:bg-[#E8F4F8]"
+                      className="border-[#26C4B5] text-[#26C4B5] hover:bg-[#E3F1F1]"
                     >
                       <Plus className="w-3 h-3 mr-1" />
                       Implant
@@ -1718,7 +1729,7 @@ export function ToothDetailPage({
                       onClick={() => handleAddNewTreatment('Root Canal')}
                       size="sm"
                       variant="outline"
-                      className="border-[#1E6E97] text-[#1E6E97] hover:bg-[#E8F4F8]"
+                      className="border-[#26C4B5] text-[#26C4B5] hover:bg-[#E3F1F1]"
                     >
                       <Plus className="w-3 h-3 mr-1" />
                       Root Canal
@@ -1727,7 +1738,7 @@ export function ToothDetailPage({
                       onClick={() => handleAddNewTreatment('Surgery')}
                       size="sm"
                       variant="outline"
-                      className="border-[#1E6E97] text-[#1E6E97] hover:bg-[#E8F4F8]"
+                      className="border-[#26C4B5] text-[#26C4B5] hover:bg-[#E3F1F1]"
                     >
                       <Plus className="w-3 h-3 mr-1" />
                       Surgery
@@ -1736,7 +1747,7 @@ export function ToothDetailPage({
                       onClick={() => handleAddNewTreatment('Periodontics')}
                       size="sm"
                       variant="outline"
-                      className="border-[#1E6E97] text-[#1E6E97] hover:bg-[#E8F4F8]"
+                      className="border-[#26C4B5] text-[#26C4B5] hover:bg-[#E3F1F1]"
                     >
                       <Plus className="w-3 h-3 mr-1" />
                       Periodontics
@@ -1745,7 +1756,7 @@ export function ToothDetailPage({
                       onClick={() => handleAddNewTreatment('Orthodontics')}
                       size="sm"
                       variant="outline"
-                      className="border-[#1E6E97] text-[#1E6E97] hover:bg-[#E8F4F8]"
+                      className="border-[#26C4B5] text-[#26C4B5] hover:bg-[#E3F1F1]"
                     >
                       <Plus className="w-3 h-3 mr-1" />
                       Orthodontics
@@ -1754,7 +1765,7 @@ export function ToothDetailPage({
                       onClick={() => handleAddNewTreatment('Pediatric')}
                       size="sm"
                       variant="outline"
-                      className="border-[#1E6E97] text-[#1E6E97] hover:bg-[#E8F4F8]"
+                      className="border-[#26C4B5] text-[#26C4B5] hover:bg-[#E3F1F1]"
                     >
                       <Plus className="w-3 h-3 mr-1" />
                       Pediatric
@@ -1763,7 +1774,7 @@ export function ToothDetailPage({
                       onClick={() => handleAddNewTreatment('Prosthetics')}
                       size="sm"
                       variant="outline"
-                      className="border-[#1E6E97] text-[#1E6E97] hover:bg-[#E8F4F8]"
+                      className="border-[#26C4B5] text-[#26C4B5] hover:bg-[#E3F1F1]"
                     >
                       <Plus className="w-3 h-3 mr-1" />
                       Prosthetic Dentistry
@@ -1772,7 +1783,7 @@ export function ToothDetailPage({
                       onClick={() => setShowAddTreatmentMenu(false)}
                       size="sm"
                       variant="ghost"
-                      className="text-[#6A7279]"
+                      className="text-[#8A8378]"
                     >
                       Cancel
                     </Button>
@@ -1782,7 +1793,7 @@ export function ToothDetailPage({
                 <Button
                   onClick={() => setShowAddTreatmentMenu(true)}
                   variant="outline"
-                  className="w-full border-dashed border-[#D9DEE2] text-[#6A7279] hover:border-[#1E6E97] hover:text-[#1E6E97] rounded-[16px]"
+                  className="w-full border-dashed border-[#E0D8C8] text-[#8A8378] hover:border-[#26C4B5] hover:text-[#26C4B5] rounded-[16px]"
                 >
                   <Plus className="w-4 h-4 mr-2" />
                   Add Another Treatment
@@ -1791,7 +1802,7 @@ export function ToothDetailPage({
             </div>
 
             {/* Remove All */}
-            <div className="pt-4 border-t border-[#D9DEE2]">
+            <div className="pt-4 border-t border-[#E0D8C8]">
               <Button
                 onClick={() => onRemoveAllTreatments(toothNumber)}
                 variant="outline"

@@ -63,7 +63,7 @@ const notifications: Notification[] = [
 function getIcon(type: string) {
   switch (type) {
     case 'appointment':
-      return <CalendarCheck className="w-5 h-5 text-[#1E6E97]" />;
+      return <CalendarCheck className="w-5 h-5 text-[#26C4B5]" />;
     case 'treatment':
       return <FileText className="w-5 h-5 text-[#2D9F6F]" />;
     case 'alert':
@@ -71,20 +71,20 @@ function getIcon(type: string) {
     case 'reminder':
       return <Bell className="w-5 h-5 text-[#8B6CC1]" />;
     default:
-      return <Bell className="w-5 h-5 text-[#8AA4B1]" />;
+      return <Bell className="w-5 h-5 text-[#8A8378]" />;
   }
 }
 
 function getBgColor(type: string) {
   switch (type) {
     case 'appointment':
-      return 'bg-[#E8F4F8]';
+      return 'bg-[#E3F1F1]';
     case 'treatment':
       return 'bg-[#E8F5EF]';
     case 'alert':
       return 'bg-[#FEF0EB]';
     case 'reminder':
-      return 'bg-[#F0EBF8]';
+      return 'bg-[#E3F1F1]';
     default:
       return 'bg-gray-100';
   }
@@ -94,19 +94,19 @@ export function NotificationsScreen() {
   const unreadCount = notifications.filter((n) => !n.read).length;
 
   return (
-    <div className="bg-[#FAFAFA] min-h-screen pb-[100px]">
+    <div className="bg-[#F6F1E7] min-h-screen pb-[100px]">
       {/* Header */}
-      <div className="bg-white border-b border-[#D9DEE2] px-5 pt-5 pb-4">
+      <div className="bg-white border-b border-[#E0D8C8] px-5 pt-5 pb-4">
         <div className="max-w-[430px] md:max-w-[768px] lg:max-w-[1024px] mx-auto flex items-center justify-between">
           <div>
-            <h1 className="font-medium text-[19px] text-[#1C1C1C]">Notifications</h1>
+            <h1 className="font-medium text-[19px] text-[#231F20]">Notifications</h1>
             {unreadCount > 0 && (
-              <p className="text-sm text-[#6A7279] mt-0.5">
+              <p className="text-sm text-[#8A8378] mt-0.5">
                 {unreadCount} unread
               </p>
             )}
           </div>
-          <button className="text-sm text-[#1E6E97] font-medium hover:opacity-80 transition-opacity">
+          <button className="text-sm text-[#26C4B5] font-medium hover:opacity-80 transition-opacity">
             Mark all read
           </button>
         </div>
@@ -119,8 +119,8 @@ export function NotificationsScreen() {
               key={notification.id}
               className={`bg-white border rounded-[14px] p-4 flex gap-3 transition-colors ${
                 notification.read
-                  ? 'border-[#D9DEE2]'
-                  : 'border-[#1E6E97]/30 shadow-sm'
+                  ? 'border-[#E0D8C8]'
+                  : 'border-[#26C4B5]/30 shadow-sm'
               }`}
             >
               <div
@@ -133,20 +133,20 @@ export function NotificationsScreen() {
               <div className="flex-1 min-w-0">
                 <div className="flex items-start justify-between gap-2">
                   <p
-                    className={`font-medium text-[#1C1C1C] ${
+                    className={`font-medium text-[#231F20] ${
                       !notification.read ? '' : 'opacity-70'
                     }`}
                   >
                     {notification.title}
                   </p>
                   {!notification.read && (
-                    <div className="w-2 h-2 rounded-full bg-[#1E6E97] flex-shrink-0 mt-2" />
+                    <div className="w-2 h-2 rounded-full bg-[#26C4B5] flex-shrink-0 mt-2" />
                   )}
                 </div>
-                <p className="text-sm text-[#6A7279] mt-1 line-clamp-2">
+                <p className="text-sm text-[#8A8378] mt-1 line-clamp-2">
                   {notification.description}
                 </p>
-                <p className="text-xs text-[#8AA4B1] mt-2">{notification.time}</p>
+                <p className="text-xs text-[#8A8378] mt-2">{notification.time}</p>
               </div>
             </div>
           ))}

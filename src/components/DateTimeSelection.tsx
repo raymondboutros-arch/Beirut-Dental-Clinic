@@ -90,30 +90,30 @@ export function DateTimeSelection({ onBack, onContinue }: DateTimeSelectionProps
   for (let d = 1; d <= daysInMonth; d++) calendarDays.push(d);
 
   return (
-    <div className="bg-[#FAFAFA] min-h-screen flex flex-col pb-[85px]">
+    <div className="bg-[#F6F1E7] min-h-screen flex flex-col pb-[85px]">
       {/* Header */}
-      <div className="bg-white border-b border-[#D9DEE2] px-4 py-4 sticky top-0 z-10">
+      <div className="bg-white border-b border-[#E0D8C8] px-4 py-4 sticky top-0 z-10">
         <div className="relative flex items-center justify-center max-w-[430px] md:max-w-[768px] lg:max-w-[1024px] mx-auto">
           <button
             onClick={onBack}
             className="absolute left-0 p-2 -ml-2 hover:bg-gray-50 rounded-full transition-colors"
             aria-label="Go back"
           >
-            <ArrowLeft className="w-6 h-6 text-[#1C1C1C]" />
+            <ArrowLeft className="w-6 h-6 text-[#231F20]" />
           </button>
-          <h1 className="font-medium text-[19px] text-[#1C1C1C]">Date & Time</h1>
+          <h1 className="font-medium text-[19px] text-[#231F20]">Date & Time</h1>
         </div>
       </div>
 
       {/* Step Indicator */}
-      <div className="bg-white border-b border-[#D9DEE2] px-4 py-3">
+      <div className="bg-white border-b border-[#E0D8C8] px-4 py-3">
         <div className="max-w-[430px] md:max-w-[768px] lg:max-w-[1024px] mx-auto flex items-center gap-2">
-          <div className="flex-1 h-[3px] bg-[#1E6E97] rounded-full" />
-          <div className="flex-1 h-[3px] bg-[#1E6E97] rounded-full" />
-          <div className="flex-1 h-[3px] bg-[#1E6E97] rounded-full" />
-          <div className="flex-1 h-[3px] bg-[#D9DEE2] rounded-full" />
+          <div className="flex-1 h-[3px] bg-[#26C4B5] rounded-full" />
+          <div className="flex-1 h-[3px] bg-[#26C4B5] rounded-full" />
+          <div className="flex-1 h-[3px] bg-[#26C4B5] rounded-full" />
+          <div className="flex-1 h-[3px] bg-[#E0D8C8] rounded-full" />
         </div>
-        <p className="text-xs text-[#8AA4B1] mt-2 text-center">Step 3 of 4</p>
+        <p className="text-xs text-[#8A8378] mt-2 text-center">Step 3 of 4</p>
       </div>
 
       {/* Content */}
@@ -121,30 +121,30 @@ export function DateTimeSelection({ onBack, onContinue }: DateTimeSelectionProps
         <div className="max-w-[430px] md:max-w-[768px] lg:max-w-[1024px] mx-auto">
 
           {/* Calendar Card */}
-          <div className="bg-white border border-[#D9DEE2] rounded-[16px] p-4 mb-5">
+          <div className="bg-white border border-[#E0D8C8] rounded-[16px] p-4 mb-5">
             {/* Month Navigation */}
             <div className="flex items-center justify-between mb-4">
               <button
                 onClick={handlePrevMonth}
-                className="p-1.5 hover:bg-[#F0F3F5] rounded-full transition-colors"
+                className="p-1.5 hover:bg-[#EFE8DA] rounded-full transition-colors"
               >
-                <ChevronLeft className="w-5 h-5 text-[#6A7279]" />
+                <ChevronLeft className="w-5 h-5 text-[#8A8378]" />
               </button>
-              <h2 className="font-semibold text-[#1C1C1C]">
+              <h2 className="font-semibold text-[#231F20]">
                 {monthNames[currentMonth]} {currentYear}
               </h2>
               <button
                 onClick={handleNextMonth}
-                className="p-1.5 hover:bg-[#F0F3F5] rounded-full transition-colors"
+                className="p-1.5 hover:bg-[#EFE8DA] rounded-full transition-colors"
               >
-                <ChevronRight className="w-5 h-5 text-[#6A7279]" />
+                <ChevronRight className="w-5 h-5 text-[#8A8378]" />
               </button>
             </div>
 
             {/* Day labels */}
             <div className="grid grid-cols-7 mb-2">
               {dayLabels.map((day) => (
-                <div key={day} className="text-center text-xs font-medium text-[#8AA4B1] py-1">
+                <div key={day} className="text-center text-xs font-medium text-[#8A8378] py-1">
                   {day}
                 </div>
               ))}
@@ -172,17 +172,17 @@ export function DateTimeSelection({ onBack, onContinue }: DateTimeSelectionProps
                     }}
                     className={`relative h-10 flex items-center justify-center rounded-full text-sm transition-all ${
                       selected
-                        ? 'bg-[#1E6E97] text-white font-medium'
+                        ? 'bg-[#26C4B5] text-white font-medium'
                         : disabled
-                        ? 'text-[#D9DEE2] cursor-not-allowed'
+                        ? 'text-[#E0D8C8] cursor-not-allowed'
                         : todayMark
-                        ? 'text-[#1E6E97] font-medium hover:bg-[#E8F4F8]'
-                        : 'text-[#1C1C1C] hover:bg-[#F0F3F5]'
+                        ? 'text-[#26C4B5] font-medium hover:bg-[#E3F1F1]'
+                        : 'text-[#231F20] hover:bg-[#EFE8DA]'
                     }`}
                   >
                     {day}
                     {todayMark && !selected && (
-                      <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-[#1E6E97] rounded-full" />
+                      <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-[#26C4B5] rounded-full" />
                     )}
                   </button>
                 );
@@ -195,7 +195,7 @@ export function DateTimeSelection({ onBack, onContinue }: DateTimeSelectionProps
             <div className="space-y-5">
               {timeSlots.map((group) => (
                 <div key={group.id}>
-                  <h3 className="font-semibold text-[#1C1C1C] text-sm mb-3">{group.label}</h3>
+                  <h3 className="font-semibold text-[#231F20] text-sm mb-3">{group.label}</h3>
                   <div className="grid grid-cols-3 md:grid-cols-5 gap-2">
                     {group.slots.map((slot) => {
                       const isUnavailable = unavailableSlots.includes(slot);
@@ -207,10 +207,10 @@ export function DateTimeSelection({ onBack, onContinue }: DateTimeSelectionProps
                           onClick={() => setSelectedTime(slot)}
                           className={`py-3 rounded-[12px] text-sm font-medium transition-all ${
                             isSelected
-                              ? 'bg-[#1E6E97] text-white shadow-sm'
+                              ? 'bg-[#26C4B5] text-white shadow-sm'
                               : isUnavailable
-                              ? 'bg-[#F0F3F5] text-[#C5CDD3] cursor-not-allowed line-through'
-                              : 'bg-white border border-[#D9DEE2] text-[#1C1C1C] hover:border-[#1E6E97] hover:text-[#1E6E97]'
+                              ? 'bg-[#EFE8DA] text-[#D8CFBE] cursor-not-allowed line-through'
+                              : 'bg-white border border-[#E0D8C8] text-[#231F20] hover:border-[#26C4B5] hover:text-[#26C4B5]'
                           }`}
                         >
                           {slot}
@@ -225,17 +225,17 @@ export function DateTimeSelection({ onBack, onContinue }: DateTimeSelectionProps
 
           {!selectedDate && (
             <div className="text-center py-8">
-              <p className="text-[#8AA4B1] text-sm">Select a date to see available times</p>
+              <p className="text-[#8A8378] text-sm">Select a date to see available times</p>
             </div>
           )}
         </div>
       </div>
 
       {/* Bottom CTA */}
-      <div className="bg-white border-t border-[#D9DEE2] px-4 py-4 sticky bottom-[85px]">
+      <div className="bg-white border-t border-[#E0D8C8] px-4 py-4 sticky bottom-[85px]">
         <div className="max-w-[430px] md:max-w-[768px] lg:max-w-[1024px] mx-auto">
           {selectedDate && selectedTime && (
-            <p className="text-center text-sm text-[#6A7279] mb-3">
+            <p className="text-center text-sm text-[#8A8378] mb-3">
               {formattedDate} at {selectedTime}
             </p>
           )}
@@ -244,8 +244,8 @@ export function DateTimeSelection({ onBack, onContinue }: DateTimeSelectionProps
             disabled={!selectedDate || !selectedTime}
             className={`w-full py-4 rounded-[24px] font-semibold text-white transition-all ${
               selectedDate && selectedTime
-                ? 'bg-[#1E6E97] hover:bg-[#175A7A]'
-                : 'bg-[#8AA4B1] cursor-not-allowed opacity-50'
+                ? 'bg-[#26C4B5] hover:bg-[#1FA99B]'
+                : 'bg-[#8A8378] cursor-not-allowed opacity-50'
             }`}
           >
             Continue

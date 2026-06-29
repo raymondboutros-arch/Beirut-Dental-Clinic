@@ -66,36 +66,36 @@ export function StaffSelection({ selectedService, onBack, onContinue }: StaffSel
   const [selectedStaff, setSelectedStaff] = useState<string>('');
 
   return (
-    <div className="bg-[#FAFAFA] min-h-screen flex flex-col pb-[85px]">
+    <div className="bg-[#F6F1E7] min-h-screen flex flex-col pb-[85px]">
       {/* Header */}
-      <div className="bg-white border-b border-[#D9DEE2] px-4 py-4 sticky top-0 z-10">
+      <div className="bg-white border-b border-[#E0D8C8] px-4 py-4 sticky top-0 z-10">
         <div className="relative flex items-center justify-center max-w-[430px] md:max-w-[768px] lg:max-w-[1024px] mx-auto">
           <button
             onClick={onBack}
             className="absolute left-0 p-2 -ml-2 hover:bg-gray-50 rounded-full transition-colors"
             aria-label="Go back"
           >
-            <ArrowLeft className="w-6 h-6 text-[#1C1C1C]" />
+            <ArrowLeft className="w-6 h-6 text-[#231F20]" />
           </button>
-          <h1 className="font-medium text-[19px] text-[#1C1C1C]">Select Staff</h1>
+          <h1 className="font-medium text-[19px] text-[#231F20]">Select Staff</h1>
         </div>
       </div>
 
       {/* Step Indicator */}
-      <div className="bg-white border-b border-[#D9DEE2] px-4 py-3">
+      <div className="bg-white border-b border-[#E0D8C8] px-4 py-3">
         <div className="max-w-[430px] md:max-w-[768px] lg:max-w-[1024px] mx-auto flex items-center gap-2">
-          <div className="flex-1 h-[3px] bg-[#1E6E97] rounded-full" />
-          <div className="flex-1 h-[3px] bg-[#1E6E97] rounded-full" />
-          <div className="flex-1 h-[3px] bg-[#D9DEE2] rounded-full" />
-          <div className="flex-1 h-[3px] bg-[#D9DEE2] rounded-full" />
+          <div className="flex-1 h-[3px] bg-[#26C4B5] rounded-full" />
+          <div className="flex-1 h-[3px] bg-[#26C4B5] rounded-full" />
+          <div className="flex-1 h-[3px] bg-[#E0D8C8] rounded-full" />
+          <div className="flex-1 h-[3px] bg-[#E0D8C8] rounded-full" />
         </div>
-        <p className="text-xs text-[#8AA4B1] mt-2 text-center">Step 2 of 4</p>
+        <p className="text-xs text-[#8A8378] mt-2 text-center">Step 2 of 4</p>
       </div>
 
       {/* Content */}
       <div className="flex-1 overflow-auto px-4 py-6">
         <div className="max-w-[430px] md:max-w-[768px] lg:max-w-[1024px] mx-auto">
-          <p className="text-sm text-[#6A7279] mb-5">
+          <p className="text-sm text-[#8A8378] mb-5">
             Choose your preferred practitioner for this visit
           </p>
 
@@ -108,12 +108,12 @@ export function StaffSelection({ selectedService, onBack, onContinue }: StaffSel
                   onClick={() => setSelectedStaff(staff.id)}
                   className={`w-full bg-white border rounded-[16px] p-4 flex items-start gap-3.5 transition-all text-left ${
                     isSelected
-                      ? 'border-[#1E6E97] shadow-[0_0_0_1px_#1E6E97]'
-                      : 'border-[#D9DEE2] hover:border-[#8AA4B1]'
+                      ? 'border-[#26C4B5] shadow-[0_0_0_1px_#26C4B5]'
+                      : 'border-[#E0D8C8] hover:border-[#8A8378]'
                   }`}
                 >
                   {/* Avatar */}
-                  <div className="w-14 h-14 rounded-full overflow-hidden flex-shrink-0 bg-[#E8F4F8]">
+                  <div className="w-14 h-14 rounded-full overflow-hidden flex-shrink-0 bg-[#E3F1F1]">
                     <ImageWithFallback
                       src={staff.avatar}
                       alt={staff.name}
@@ -125,15 +125,15 @@ export function StaffSelection({ selectedService, onBack, onContinue }: StaffSel
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-2">
                       <div>
-                        <p className="font-medium text-[#1C1C1C]">{staff.name}</p>
-                        <p className="text-sm text-[#1E6E97]">{staff.role}</p>
+                        <p className="font-medium text-[#231F20]">{staff.name}</p>
+                        <p className="text-sm text-[#26C4B5]">{staff.role}</p>
                       </div>
                       {/* Radio */}
                       <div
                         className={`w-6 h-6 rounded-full border-[1.5px] flex items-center justify-center flex-shrink-0 mt-0.5 transition-all ${
                           isSelected
-                            ? 'border-[#1E6E97] bg-[#1E6E97]'
-                            : 'border-[#8AA4B1] bg-white'
+                            ? 'border-[#26C4B5] bg-[#26C4B5]'
+                            : 'border-[#8A8378] bg-white'
                         }`}
                       >
                         {isSelected && (
@@ -141,18 +141,18 @@ export function StaffSelection({ selectedService, onBack, onContinue }: StaffSel
                         )}
                       </div>
                     </div>
-                    <p className="text-xs text-[#6A7279] mt-1">{staff.specialty}</p>
+                    <p className="text-xs text-[#8A8378] mt-1">{staff.specialty}</p>
 
                     <div className="flex items-center gap-3 mt-2.5">
                       <div className="flex items-center gap-1">
                         <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
-                        <span className="text-xs font-medium text-[#1C1C1C]">{staff.rating}</span>
-                        <span className="text-xs text-[#8AA4B1]">({staff.reviews})</span>
+                        <span className="text-xs font-medium text-[#231F20]">{staff.rating}</span>
+                        <span className="text-xs text-[#8A8378]">({staff.reviews})</span>
                       </div>
-                      <div className="w-px h-3 bg-[#D9DEE2]" />
+                      <div className="w-px h-3 bg-[#E0D8C8]" />
                       <div className="flex items-center gap-1">
-                        <Clock className="w-3.5 h-3.5 text-[#8AA4B1]" />
-                        <span className="text-xs text-[#6A7279]">{staff.nextAvailable}</span>
+                        <Clock className="w-3.5 h-3.5 text-[#8A8378]" />
+                        <span className="text-xs text-[#8A8378]">{staff.nextAvailable}</span>
                       </div>
                     </div>
                   </div>
@@ -164,15 +164,15 @@ export function StaffSelection({ selectedService, onBack, onContinue }: StaffSel
       </div>
 
       {/* Bottom CTA */}
-      <div className="bg-white border-t border-[#D9DEE2] px-4 py-4 sticky bottom-[85px]">
+      <div className="bg-white border-t border-[#E0D8C8] px-4 py-4 sticky bottom-[85px]">
         <div className="max-w-[430px] md:max-w-[768px] lg:max-w-[1024px] mx-auto">
           <button
             onClick={() => selectedStaff && onContinue(selectedStaff)}
             disabled={!selectedStaff}
             className={`w-full py-4 rounded-[24px] font-semibold text-white transition-all ${
               selectedStaff
-                ? 'bg-[#1E6E97] hover:bg-[#175A7A]'
-                : 'bg-[#8AA4B1] cursor-not-allowed opacity-50'
+                ? 'bg-[#26C4B5] hover:bg-[#1FA99B]'
+                : 'bg-[#8A8378] cursor-not-allowed opacity-50'
             }`}
           >
             Continue

@@ -2,9 +2,13 @@ node_modules/
 
 # Build output
 dist/
+build/
 
 # Local caches
 .npm-cache/
+
+# Tooling
+.claude/
 
 # Logs
 npm-debug.log*

@@ -9,7 +9,7 @@ function FeedIcon({ active }: { active: boolean }) {
         <g>
           <path
             d={svgPaths.p267dd7f0}
-            stroke={active ? "#027BA4" : "#8A8B8D"}
+            stroke={active ? "#26C4B5" : "#8A8378"}
             strokeWidth="2.25"
           />
         </g>
@@ -21,7 +21,7 @@ function FeedIcon({ active }: { active: boolean }) {
 function SearchIcon({ active }: { active: boolean }) {
   return (
     <div className="relative shrink-0 size-[28px] flex items-center justify-center">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={active ? "#027BA4" : "#8A8B8D"} strokeWidth="2.25" strokeLinecap="round" strokeLinejoin="round">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={active ? "#26C4B5" : "#8A8378"} strokeWidth="2.25" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="11" cy="11" r="8" />
         <path d="m21 21-4.3-4.3" />
       </svg>
@@ -34,8 +34,8 @@ function BellIcon({ active }: { active: boolean }) {
     <div className="h-[22px] relative shrink-0 w-[16px]">
       <svg className="block size-full" fill="none" preserveAspectRatio="xMidYMid meet" viewBox="0 0 17 23">
         <g>
-          <path d={svgPaths.p20a7a000} fill={active ? "#027BA4" : "#8A8B8D"} />
-          <path d={svgPaths.p3990a880} stroke={active ? "#027BA4" : "#8A8B8D"} strokeLinecap="round" strokeWidth="2.25" />
+          <path d={svgPaths.p20a7a000} fill={active ? "#26C4B5" : "#8A8378"} />
+          <path d={svgPaths.p3990a880} stroke={active ? "#26C4B5" : "#8A8378"} strokeLinecap="round" strokeWidth="2.25" />
         </g>
       </svg>
     </div>
@@ -46,9 +46,9 @@ function MenuIcon({ active }: { active: boolean }) {
   return (
     <div className="h-[14px] relative shrink-0 w-[22px]">
       <svg className="block" width="22" height="14" viewBox="0 0 25 17" fill="none">
-        <path d="M23.125 1.125L1.12501 1.125" stroke={active ? "#027BA4" : "#8A8B8D"} strokeLinecap="round" strokeWidth="2.25" />
-        <path d="M23.125 8.125L1.125 8.125" stroke={active ? "#027BA4" : "#8A8B8D"} strokeLinecap="round" strokeWidth="2.25" />
-        <path d="M23.125 15.125L1.125 15.125" stroke={active ? "#027BA4" : "#8A8B8D"} strokeLinecap="round" strokeWidth="2.25" />
+        <path d="M23.125 1.125L1.12501 1.125" stroke={active ? "#26C4B5" : "#8A8378"} strokeLinecap="round" strokeWidth="2.25" />
+        <path d="M23.125 8.125L1.125 8.125" stroke={active ? "#26C4B5" : "#8A8378"} strokeLinecap="round" strokeWidth="2.25" />
+        <path d="M23.125 15.125L1.125 15.125" stroke={active ? "#26C4B5" : "#8A8378"} strokeLinecap="round" strokeWidth="2.25" />
       </svg>
     </div>
   );
@@ -58,7 +58,7 @@ function ActiveDot() {
   return (
     <div className="size-[5px] mt-[4px]">
       <svg className="block size-full" fill="none" viewBox="0 0 5 5">
-        <circle cx="2.5" cy="2.5" r="2.5" fill="#027BA4" />
+        <circle cx="2.5" cy="2.5" r="2.5" fill="#26C4B5" />
       </svg>
     </div>
   );

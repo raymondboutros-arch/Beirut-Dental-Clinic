@@ -1,5 +1,25 @@
 import Frame from '../imports/Frame';
 import svgPaths from '../imports/svg-81glllw5g3';
+// Surface-diagram geometry (drawn in the chart's 93x153 space, clipped per tooth)
+const SURFACE_ZONES = [
+  { l: 'B', a0: -45, a1: 45 },
+  { l: 'D', a0: 45, a1: 135 },
+  { l: 'L', a0: 135, a1: 225 },
+  { l: 'M', a0: 225, a1: 315 },
+];
+
+const polarPt = (cx: number, cy: number, r: number, deg: number): [number, number] => {
+  const a = ((deg - 90) * Math.PI) / 180;
+  return [cx + r * Math.cos(a), cy + r * Math.sin(a)];
+};
+
+const wedgePath = (cx: number, cy: number, a0: number, a1: number, ri: number, ro: number): string => {
+  const [x0o, y0o] = polarPt(cx, cy, ro, a0);
+  const [x1o, y1o] = polarPt(cx, cy, ro, a1);
+  const [x1i, y1i] = polarPt(cx, cy, ri, a1);
+  const [x0i, y0i] = polarPt(cx, cy, ri, a0);
+  return `M${x0o} ${y0o}A${ro} ${ro} 0 0 1 ${x1o} ${y1o}L${x1i} ${y1i}A${ri} ${ri} 0 0 0 ${x0i} ${y0i}Z`;
+};
 
 interface BridgeGroup {
   id: string;
@@ -13,9 +33,10 @@ interface ToothChartProps {
   onToothToggle: (toothNumber: number) => void;
   bridgeGroups?: Record<string, BridgeGroup>;
   treatmentColorMap?: Record<number, string>; // toothNumber -> treatment type color
+  surfaceMap?: Record<number, string[]>; // toothNumber -> charted surface letters (e.g. ['MOD'])
 }
 
-export function ToothChart({ selectedTeeth, activeTooth, onToothToggle, bridgeGroups = {} }: ToothChartProps) {
+export function ToothChart({ selectedTeeth, activeTooth, onToothToggle, bridgeGroups = {}, surfaceMap = {} }: ToothChartProps) {
   const isSelected = (toothNum: number) => selectedTeeth.includes(toothNum);
   const isActive = (toothNum: number) => activeTooth === toothNum;
 
@@ -138,7 +159,7 @@ export function ToothChart({ selectedTeeth, activeTooth, onToothToggle, bridgeGr
             {/* SVG defs for pontic pattern */}
             <defs>
               <pattern id="pontic-stripe" width="3" height="3" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
-                <line x1="0" y1="0" x2="0" y2="3" stroke="rgba(245, 158, 11, 0.5)" strokeWidth="1.5" />
+                <line x1="0" y1="0" x2="0" y2="3" stroke="rgba(194, 168, 120, 0.5)" strokeWidth="1.5" />
               </pattern>
             </defs>
 
@@ -166,8 +187,18 @@ export function ToothChart({ selectedTeeth, activeTooth, onToothToggle, bridgeGr
               const scaleX = width / pathWidth;
               const scaleY = height / pathHeight;
 
-              let fillColor = 'rgba(99, 102, 241, 0)';
-              let strokeColor = 'rgba(99, 102, 241, 0)';
+              // Per-tooth surface diagram, clipped to the real tooth shape
+              const surfaces = surfaceMap[toothNum];
+              const cx = x + width / 2;
+              const cy = y + height / 2;
+              const sRo = Math.max(width, height) * 0.72;
+              const sRi = Math.min(width, height) * 0.34;
+              const charted = new Set((surfaces?.[0] || '').split(''));
+              const sLine = active ? 'rgba(15, 94, 96, 0.9)' : 'rgba(15, 94, 96, 0.5)';
+              const sFill = 'rgba(64, 192, 195, 0.55)';
+
+              let fillColor = 'rgba(64, 192, 195, 0)';
+              let strokeColor = 'rgba(64, 192, 195, 0)';
               let strokeWidth = 0;
               let usePonticPattern = false;
 
@@ -176,52 +207,80 @@ export function ToothChart({ selectedTeeth, activeTooth, onToothToggle, bridgeGr
                 if (bridgeInfo.role === 'pontic') {
                   fillColor = 'url(#pontic-stripe)';
                   usePonticPattern = true;
-                  strokeColor = 'rgba(245, 158, 11, 0.8)';
+                  strokeColor = 'rgba(194, 168, 120, 0.8)';
                   strokeWidth = 0.3;
                 } else {
                   // Abutment
-                  fillColor = 'rgba(245, 158, 11, 0.3)';
-                  strokeColor = 'rgba(245, 158, 11, 1)';
+                  fillColor = 'rgba(194, 168, 120, 0.3)';
+                  strokeColor = 'rgba(194, 168, 120, 1)';
                   strokeWidth = 0.3;
                 }
 
                 // Override if also active
                 if (active) {
-                  strokeColor = 'rgba(245, 158, 11, 1)';
+                  strokeColor = 'rgba(194, 168, 120, 1)';
                   strokeWidth = 0.5;
                   if (!usePonticPattern) {
-                    fillColor = 'rgba(245, 158, 11, 0.45)';
+                    fillColor = 'rgba(194, 168, 120, 0.45)';
                   }
                 }
               } else if (active && selected) {
-                fillColor = 'rgba(99, 102, 241, 0.4)';
-                strokeColor = 'rgba(99, 102, 241, 1)';
+                fillColor = 'rgba(64, 192, 195, 0.4)';
+                strokeColor = 'rgba(64, 192, 195, 1)';
                 strokeWidth = 0.4;
               } else if (active) {
-                fillColor = 'rgba(99, 102, 241, 0.2)';
-                strokeColor = 'rgba(99, 102, 241, 1)';
+                fillColor = 'rgba(64, 192, 195, 0.2)';
+                strokeColor = 'rgba(64, 192, 195, 1)';
                 strokeWidth = 0.4;
               } else if (selected) {
-                fillColor = 'rgba(99, 102, 241, 0.25)';
-                strokeColor = 'rgba(99, 102, 241, 1)';
+                fillColor = 'rgba(64, 192, 195, 0.25)';
+                strokeColor = 'rgba(64, 192, 195, 1)';
                 strokeWidth = 0.2;
               }
 
+              // With a surface diagram, let it carry the tint (drop the blanket fill)
+              if (surfaces && surfaces.length > 0 && !bridgeInfo && !active) {
+                fillColor = 'rgba(64, 192, 195, 0)';
+              }
+
               return (
-                <g key={toothNum} transform={`translate(${x}, ${y})`}>
-                  <g transform={`scale(${scaleX}, ${scaleY})`}>
-                    <path
-                      d={toothData_entry.path}
-                      fill={fillColor}
-                      stroke={strokeColor}
-                      strokeWidth={strokeWidth > 0 ? strokeWidth / scaleX : undefined}
-                      className="pointer-events-auto cursor-pointer transition-all duration-200 hover:fill-[rgba(99,102,241,0.15)] hover:stroke-[rgba(99,102,241,0.5)] hover:stroke-[0.15]"
-                      style={{
-                        strokeWidth: strokeWidth > 0 ? `${strokeWidth / scaleX}` : undefined,
-                      }}
-                      onClick={() => onToothToggle(toothNum)}
-                    />
+                <g key={toothNum}>
+                  <g transform={`translate(${x}, ${y})`}>
+                    <g transform={`scale(${scaleX}, ${scaleY})`}>
+                      <path
+                        data-tooth={toothNum}
+                        d={toothData_entry.path}
+                        fill={fillColor}
+                        stroke={strokeColor}
+                        strokeWidth={strokeWidth > 0 ? strokeWidth / scaleX : undefined}
+                        className="pointer-events-auto cursor-pointer transition-all duration-200 hover:fill-[rgba(64,192,195,0.15)] hover:stroke-[rgba(64,192,195,0.5)] hover:stroke-[0.15]"
+                        style={{
+                          strokeWidth: strokeWidth > 0 ? `${strokeWidth / scaleX}` : undefined,
+                        }}
+                        onClick={() => onToothToggle(toothNum)}
+                      />
+                    </g>
                   </g>
+                  {surfaces && surfaces.length > 0 && (
+                    <>
+                      <clipPath id={`tc-${toothNum}`}>
+                        <path d={toothData_entry.path} transform={`translate(${x}, ${y}) scale(${scaleX}, ${scaleY})`} />
+                      </clipPath>
+                      <g clipPath={`url(#tc-${toothNum})`}>
+                        {SURFACE_ZONES.map((z) =>
+                          charted.has(z.l) ? (
+                            <path key={z.l} d={wedgePath(cx, cy, z.a0, z.a1, sRi, sRo)} fill={sFill} />
+                          ) : null
+                        )}
+                        {[45, 135, 225, 315].map((deg) => {
+                          const [xi, yi] = polarPt(cx, cy, sRi, deg);
+                          const [xo, yo] = polarPt(cx, cy, sRo, deg);
+                          return <path key={deg} d={`M${xi} ${yi}L${xo} ${yo}`} stroke={sLine} strokeWidth={0.3} fill="none" />;
+                        })}
+                      </g>
+                      <circle cx={cx} cy={cy} r={sRi} fill={charted.has('O') ? sFill : 'none'} stroke={sLine} strokeWidth={0.3} />
+                    </>
+                  )}
                 </g>
               );
             })}
@@ -232,7 +291,7 @@ export function ToothChart({ selectedTeeth, activeTooth, onToothToggle, bridgeGr
                 key={arc.key}
                 d={arc.path}
                 fill="none"
-                stroke="rgba(245, 158, 11, 0.7)"
+                stroke="rgba(194, 168, 120, 0.7)"
                 strokeWidth="0.6"
                 strokeDasharray="1.5 0.8"
                 className="pointer-events-none"
@@ -253,6 +312,31 @@ export function ToothChart({ selectedTeeth, activeTooth, onToothToggle, bridgeGr
 
               const left = inset.left + (100 - inset.left - inset.right) / 2;
               const top = inset.top + (100 - inset.top - inset.bottom) / 2;
+              const width = 100 - inset.left - inset.right;
+              const height = 100 - inset.top - inset.bottom;
+              const surfaces = surfaceMap[toothNum];
+
+              // Treated teeth: number sits over the surface diagram (drawn in the SVG layer)
+              if (surfaces && surfaces.length > 0) {
+                return (
+                  <div
+                    key={`label-${toothNum}`}
+                    className="absolute flex items-center justify-center"
+                    style={{
+                      left: `${left}%`,
+                      top: `${top}%`,
+                      transform: 'translate(-50%, -50%)',
+                    }}
+                  >
+                    <span
+                      className="text-[10px] font-bold whitespace-nowrap"
+                      style={{ fontFamily: 'Inter, system-ui, sans-serif', color: '#231F20', textShadow: '0 0 3px rgba(255, 255, 255, 0.95)' }}
+                    >
+                      {toothNum}
+                    </span>
+                  </div>
+                );
+              }
 
               return (
                 <div
@@ -269,7 +353,7 @@ export function ToothChart({ selectedTeeth, activeTooth, onToothToggle, bridgeGr
                       bridgeInfo
                         ? 'text-amber-600 font-bold'
                         : active || selected
-                        ? 'text-[#6366F1] font-bold'
+                        ? 'text-[#40C0C3] font-bold'
                         : 'text-[#475569] font-semibold'
                     }`}
                     style={{

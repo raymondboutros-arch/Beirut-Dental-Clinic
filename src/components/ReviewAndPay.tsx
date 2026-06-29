@@ -83,47 +83,47 @@ export function ReviewAndPay({
   // Confirmation screen
   if (isConfirmed) {
     return (
-      <div className="bg-[#FAFAFA] min-h-screen flex flex-col pb-[85px]">
+      <div className="bg-[#F6F1E7] min-h-screen flex flex-col pb-[85px]">
         <div className="flex-1 flex items-center justify-center px-5">
           <div className="max-w-[430px] md:max-w-[768px] lg:max-w-[1024px] w-full text-center">
             <div className="w-20 h-20 rounded-full bg-[#E6F7EF] flex items-center justify-center mx-auto mb-6">
               <CheckCircle2 className="w-10 h-10 text-[#2D9F6F]" />
             </div>
-            <h1 className="text-[24px] font-semibold text-[#1C1C1C] mb-2">Booking Confirmed!</h1>
-            <p className="text-[#6A7279] mb-8">
+            <h1 className="text-[24px] font-semibold text-[#231F20] mb-2">Booking Confirmed!</h1>
+            <p className="text-[#8A8378] mb-8">
               Your appointment has been successfully booked
             </p>
 
-            <div className="bg-white border border-[#D9DEE2] rounded-[16px] p-5 text-left mb-6">
-              <div className="flex items-center gap-3 mb-4 pb-4 border-b border-[#D9DEE2]">
-                <div className="w-12 h-12 rounded-full overflow-hidden bg-[#E8F4F8] flex-shrink-0">
+            <div className="bg-white border border-[#E0D8C8] rounded-[16px] p-5 text-left mb-6">
+              <div className="flex items-center gap-3 mb-4 pb-4 border-b border-[#E0D8C8]">
+                <div className="w-12 h-12 rounded-full overflow-hidden bg-[#E3F1F1] flex-shrink-0">
                   {staff.avatar && (
                     <ImageWithFallback src={staff.avatar} alt={staff.name} className="w-full h-full object-cover" />
                   )}
                 </div>
                 <div>
-                  <p className="font-medium text-[#1C1C1C]">{staff.name}</p>
-                  <p className="text-sm text-[#6A7279]">{staff.role}</p>
+                  <p className="font-medium text-[#231F20]">{staff.name}</p>
+                  <p className="text-sm text-[#8A8378]">{staff.role}</p>
                 </div>
               </div>
 
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-full bg-[#F0F3F5] flex items-center justify-center flex-shrink-0">
-                    <Calendar className="w-4 h-4 text-[#6A7279]" />
+                  <div className="w-9 h-9 rounded-full bg-[#EFE8DA] flex items-center justify-center flex-shrink-0">
+                    <Calendar className="w-4 h-4 text-[#8A8378]" />
                   </div>
                   <div>
-                    <p className="text-xs text-[#8AA4B1]">Date & Time</p>
-                    <p className="text-sm text-[#1C1C1C]">{selectedDate} at {selectedTime}</p>
+                    <p className="text-xs text-[#8A8378]">Date & Time</p>
+                    <p className="text-sm text-[#231F20]">{selectedDate} at {selectedTime}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-full bg-[#F0F3F5] flex items-center justify-center flex-shrink-0">
-                    <CreditCard className="w-4 h-4 text-[#6A7279]" />
+                  <div className="w-9 h-9 rounded-full bg-[#EFE8DA] flex items-center justify-center flex-shrink-0">
+                    <CreditCard className="w-4 h-4 text-[#8A8378]" />
                   </div>
                   <div>
-                    <p className="text-xs text-[#8AA4B1]">Amount Paid</p>
-                    <p className="text-sm text-[#1C1C1C]">${total.toFixed(2)}</p>
+                    <p className="text-xs text-[#8A8378]">Amount Paid</p>
+                    <p className="text-sm text-[#231F20]">${total.toFixed(2)}</p>
                   </div>
                 </div>
               </div>
@@ -131,7 +131,7 @@ export function ReviewAndPay({
 
             <button
               onClick={onConfirm}
-              className="w-full py-4 rounded-[24px] font-semibold text-white bg-[#1E6E97] hover:bg-[#175A7A] transition-all"
+              className="w-full py-4 rounded-[24px] font-semibold text-white bg-[#26C4B5] hover:bg-[#1FA99B] transition-all"
             >
               Done
             </button>
@@ -142,30 +142,30 @@ export function ReviewAndPay({
   }
 
   return (
-    <div className="bg-[#FAFAFA] min-h-screen flex flex-col pb-[85px]">
+    <div className="bg-[#F6F1E7] min-h-screen flex flex-col pb-[85px]">
       {/* Header */}
-      <div className="bg-white border-b border-[#D9DEE2] px-4 py-4 sticky top-0 z-10">
+      <div className="bg-white border-b border-[#E0D8C8] px-4 py-4 sticky top-0 z-10">
         <div className="relative flex items-center justify-center max-w-[430px] md:max-w-[768px] lg:max-w-[1024px] mx-auto">
           <button
             onClick={onBack}
             className="absolute left-0 p-2 -ml-2 hover:bg-gray-50 rounded-full transition-colors"
             aria-label="Go back"
           >
-            <ArrowLeft className="w-6 h-6 text-[#1C1C1C]" />
+            <ArrowLeft className="w-6 h-6 text-[#231F20]" />
           </button>
-          <h1 className="font-medium text-[19px] text-[#1C1C1C]">Review & Pay</h1>
+          <h1 className="font-medium text-[19px] text-[#231F20]">Review & Pay</h1>
         </div>
       </div>
 
       {/* Step Indicator */}
-      <div className="bg-white border-b border-[#D9DEE2] px-4 py-3">
+      <div className="bg-white border-b border-[#E0D8C8] px-4 py-3">
         <div className="max-w-[430px] md:max-w-[768px] lg:max-w-[1024px] mx-auto flex items-center gap-2">
-          <div className="flex-1 h-[3px] bg-[#1E6E97] rounded-full" />
-          <div className="flex-1 h-[3px] bg-[#1E6E97] rounded-full" />
-          <div className="flex-1 h-[3px] bg-[#1E6E97] rounded-full" />
-          <div className="flex-1 h-[3px] bg-[#1E6E97] rounded-full" />
+          <div className="flex-1 h-[3px] bg-[#26C4B5] rounded-full" />
+          <div className="flex-1 h-[3px] bg-[#26C4B5] rounded-full" />
+          <div className="flex-1 h-[3px] bg-[#26C4B5] rounded-full" />
+          <div className="flex-1 h-[3px] bg-[#26C4B5] rounded-full" />
         </div>
-        <p className="text-xs text-[#8AA4B1] mt-2 text-center">Step 4 of 4</p>
+        <p className="text-xs text-[#8A8378] mt-2 text-center">Step 4 of 4</p>
       </div>
 
       {/* Content */}
@@ -173,90 +173,90 @@ export function ReviewAndPay({
         <div className="max-w-[430px] md:max-w-[768px] lg:max-w-[1024px] mx-auto space-y-4">
 
           {/* Appointment Summary */}
-          <div className="bg-white border border-[#D9DEE2] rounded-[16px] p-4">
-            <h2 className="font-semibold text-sm text-[#8AA4B1] uppercase tracking-wider mb-4">
+          <div className="bg-white border border-[#E0D8C8] rounded-[16px] p-4">
+            <h2 className="font-semibold text-sm text-[#8A8378] uppercase tracking-wider mb-4">
               Appointment Details
             </h2>
 
             {/* Service */}
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-full bg-[#E8F4F8] flex items-center justify-center flex-shrink-0">
-                <CreditCard className="w-5 h-5 text-[#1E6E97]" />
+              <div className="w-10 h-10 rounded-full bg-[#E3F1F1] flex items-center justify-center flex-shrink-0">
+                <CreditCard className="w-5 h-5 text-[#26C4B5]" />
               </div>
               <div className="flex-1">
-                <p className="font-medium text-[#1C1C1C]">{service.name}</p>
-                <p className="text-sm text-[#6A7279]">{service.duration}</p>
+                <p className="font-medium text-[#231F20]">{service.name}</p>
+                <p className="text-sm text-[#8A8378]">{service.duration}</p>
               </div>
             </div>
 
             {/* Staff */}
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-full overflow-hidden bg-[#E8F4F8] flex-shrink-0">
+              <div className="w-10 h-10 rounded-full overflow-hidden bg-[#E3F1F1] flex-shrink-0">
                 {staff.avatar ? (
                   <ImageWithFallback src={staff.avatar} alt={staff.name} className="w-full h-full object-cover" />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
-                    <User className="w-5 h-5 text-[#1E6E97]" />
+                    <User className="w-5 h-5 text-[#26C4B5]" />
                   </div>
                 )}
               </div>
               <div className="flex-1">
-                <p className="font-medium text-[#1C1C1C]">{staff.name}</p>
-                <p className="text-sm text-[#6A7279]">{staff.role}</p>
+                <p className="font-medium text-[#231F20]">{staff.name}</p>
+                <p className="text-sm text-[#8A8378]">{staff.role}</p>
               </div>
             </div>
 
             {/* Date & Time */}
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-full bg-[#E8F4F8] flex items-center justify-center flex-shrink-0">
-                <Calendar className="w-5 h-5 text-[#1E6E97]" />
+              <div className="w-10 h-10 rounded-full bg-[#E3F1F1] flex items-center justify-center flex-shrink-0">
+                <Calendar className="w-5 h-5 text-[#26C4B5]" />
               </div>
               <div className="flex-1">
-                <p className="font-medium text-[#1C1C1C]">{selectedDate}</p>
-                <p className="text-sm text-[#6A7279]">{selectedTime}</p>
+                <p className="font-medium text-[#231F20]">{selectedDate}</p>
+                <p className="text-sm text-[#8A8378]">{selectedTime}</p>
               </div>
             </div>
 
             {/* Location */}
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-[#E8F4F8] flex items-center justify-center flex-shrink-0">
-                <MapPin className="w-5 h-5 text-[#1E6E97]" />
+              <div className="w-10 h-10 rounded-full bg-[#E3F1F1] flex items-center justify-center flex-shrink-0">
+                <MapPin className="w-5 h-5 text-[#26C4B5]" />
               </div>
               <div className="flex-1">
-                <p className="font-medium text-[#1C1C1C]">DentaCare Pro Clinic</p>
-                <p className="text-sm text-[#6A7279]">Mar Roukoz, Beirut</p>
+                <p className="font-medium text-[#231F20]">DentaCare Pro Clinic</p>
+                <p className="text-sm text-[#8A8378]">Mar Roukoz, Beirut</p>
               </div>
             </div>
           </div>
 
           {/* Payment Method */}
-          <div className="bg-white border border-[#D9DEE2] rounded-[16px] p-4">
-            <h2 className="font-semibold text-sm text-[#8AA4B1] uppercase tracking-wider mb-4">
+          <div className="bg-white border border-[#E0D8C8] rounded-[16px] p-4">
+            <h2 className="font-semibold text-sm text-[#8A8378] uppercase tracking-wider mb-4">
               Payment Method
             </h2>
 
             <button
               onClick={() => setShowPaymentOptions(!showPaymentOptions)}
-              className="w-full flex items-center justify-between p-3 bg-[#F0F3F5] rounded-[12px] mb-3"
+              className="w-full flex items-center justify-between p-3 bg-[#EFE8DA] rounded-[12px] mb-3"
             >
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center">
-                  {paymentMethod === 'card' && <CreditCard className="w-4 h-4 text-[#1E6E97]" />}
-                  {paymentMethod === 'whish' && <Wallet className="w-4 h-4 text-[#1E6E97]" />}
+                  {paymentMethod === 'card' && <CreditCard className="w-4 h-4 text-[#26C4B5]" />}
+                  {paymentMethod === 'whish' && <Wallet className="w-4 h-4 text-[#26C4B5]" />}
                 </div>
-                <span className="font-medium text-[#1C1C1C]">
+                <span className="font-medium text-[#231F20]">
                   {paymentMethod === 'card' && 'Credit / Debit Card'}
                   {paymentMethod === 'whish' && 'Whish Money'}
                 </span>
               </div>
-              <ChevronDown className={`w-4 h-4 text-[#8AA4B1] transition-transform ${showPaymentOptions ? 'rotate-180' : ''}`} />
+              <ChevronDown className={`w-4 h-4 text-[#8A8378] transition-transform ${showPaymentOptions ? 'rotate-180' : ''}`} />
             </button>
 
             {showPaymentOptions && (
               <div className="space-y-2 mb-3">
                 {[
-                  { id: 'card' as const, label: 'Credit / Debit Card', icon: <CreditCard className="w-4 h-4 text-[#6A7279]" /> },
-                  { id: 'whish' as const, label: 'Whish Money', icon: <Wallet className="w-4 h-4 text-[#6A7279]" /> },
+                  { id: 'card' as const, label: 'Credit / Debit Card', icon: <CreditCard className="w-4 h-4 text-[#8A8378]" /> },
+                  { id: 'whish' as const, label: 'Whish Money', icon: <Wallet className="w-4 h-4 text-[#8A8378]" /> },
                 ].map((method) => (
                   <button
                     key={method.id}
@@ -266,42 +266,42 @@ export function ReviewAndPay({
                     }}
                     className={`w-full flex items-center gap-3 p-3 rounded-[12px] transition-colors ${
                       paymentMethod === method.id
-                        ? 'bg-[#E8F4F8] border border-[#1E6E97]'
-                        : 'bg-white border border-[#D9DEE2] hover:bg-[#F0F3F5]'
+                        ? 'bg-[#E3F1F1] border border-[#26C4B5]'
+                        : 'bg-white border border-[#E0D8C8] hover:bg-[#EFE8DA]'
                     }`}
                   >
-                    <div className="w-8 h-8 rounded-full bg-[#F0F3F5] flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-full bg-[#EFE8DA] flex items-center justify-center">
                       {method.icon}
                     </div>
-                    <span className="text-[#1C1C1C] font-medium">{method.label}</span>
+                    <span className="text-[#231F20] font-medium">{method.label}</span>
                   </button>
                 ))}
               </div>
             )}
 
             {paymentMethod === 'card' && (
-              <div className="bg-[#F0F3F5] rounded-[12px] p-3">
+              <div className="bg-[#EFE8DA] rounded-[12px] p-3">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-7 bg-gradient-to-r from-[#1A1F71] to-[#2D3AAF] rounded flex items-center justify-center">
                     <span className="text-white text-[9px] font-medium tracking-wider">VISA</span>
                   </div>
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-[#1C1C1C]">**** **** **** 4242</p>
-                    <p className="text-xs text-[#8AA4B1]">Expires 12/27</p>
+                    <p className="text-sm font-medium text-[#231F20]">**** **** **** 4242</p>
+                    <p className="text-xs text-[#8A8378]">Expires 12/27</p>
                   </div>
                 </div>
               </div>
             )}
 
             {paymentMethod === 'whish' && (
-              <div className="bg-[#F0F3F5] rounded-[12px] p-3">
+              <div className="bg-[#EFE8DA] rounded-[12px] p-3">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-7 bg-gradient-to-r from-[#E91E63] to-[#FF5722] rounded flex items-center justify-center">
                     <span className="text-white text-[8px] font-semibold tracking-wider">WHISH</span>
                   </div>
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-[#1C1C1C]">Whish Money Wallet</p>
-                    <p className="text-xs text-[#8AA4B1]">Pay via Whish app</p>
+                    <p className="text-sm font-medium text-[#231F20]">Whish Money Wallet</p>
+                    <p className="text-xs text-[#8A8378]">Pay via Whish app</p>
                   </div>
                 </div>
               </div>
@@ -309,29 +309,29 @@ export function ReviewAndPay({
           </div>
 
           {/* Price Breakdown */}
-          <div className="bg-white border border-[#D9DEE2] rounded-[16px] p-4">
-            <h2 className="font-semibold text-sm text-[#8AA4B1] uppercase tracking-wider mb-4">
+          <div className="bg-white border border-[#E0D8C8] rounded-[16px] p-4">
+            <h2 className="font-semibold text-sm text-[#8A8378] uppercase tracking-wider mb-4">
               Price Summary
             </h2>
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-[#6A7279]">{service.name}</span>
-                <span className="font-medium text-[#1C1C1C]">${consultationFee.toFixed(2)}</span>
+                <span className="text-[#8A8378]">{service.name}</span>
+                <span className="font-medium text-[#231F20]">${consultationFee.toFixed(2)}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-[#6A7279]">Tax (11%)</span>
-                <span className="font-medium text-[#1C1C1C]">${tax.toFixed(2)}</span>
+                <span className="text-[#8A8378]">Tax (11%)</span>
+                <span className="font-medium text-[#231F20]">${tax.toFixed(2)}</span>
               </div>
-              <div className="border-t border-[#D9DEE2] pt-3 flex items-center justify-between">
-                <span className="font-semibold text-[#1C1C1C]">Total</span>
-                <span className="font-semibold text-[#1E6E97] text-lg">${total.toFixed(2)}</span>
+              <div className="border-t border-[#E0D8C8] pt-3 flex items-center justify-between">
+                <span className="font-semibold text-[#231F20]">Total</span>
+                <span className="font-semibold text-[#26C4B5] text-lg">${total.toFixed(2)}</span>
               </div>
             </div>
           </div>
 
           {/* Cancellation Policy */}
-          <div className="bg-[#FFF8F0] border border-[#F5DEB8] rounded-[16px] p-4">
-            <p className="text-xs text-[#9A7B4F]">
+          <div className="bg-[#FBF7EF] border border-[#EBDCC0] rounded-[16px] p-4">
+            <p className="text-xs text-[#C2A878]">
               <strong>Cancellation Policy:</strong> Free cancellation up to 24 hours before your appointment.
             </p>
           </div>
@@ -339,15 +339,15 @@ export function ReviewAndPay({
       </div>
 
       {/* Bottom CTA */}
-      <div className="bg-white border-t border-[#D9DEE2] px-4 py-4 sticky bottom-[85px]">
+      <div className="bg-white border-t border-[#E0D8C8] px-4 py-4 sticky bottom-[85px]">
         <div className="max-w-[430px] md:max-w-[768px] lg:max-w-[1024px] mx-auto">
           <button
             onClick={handleConfirmAndPay}
             disabled={isProcessing}
             className={`w-full py-4 rounded-[24px] font-semibold text-white transition-all flex items-center justify-center gap-2 ${
               isProcessing
-                ? 'bg-[#8AA4B1] cursor-not-allowed'
-                : 'bg-[#1E6E97] hover:bg-[#175A7A]'
+                ? 'bg-[#8A8378] cursor-not-allowed'
+                : 'bg-[#26C4B5] hover:bg-[#1FA99B]'
             }`}
           >
             {isProcessing ? (

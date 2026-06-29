@@ -195,7 +195,7 @@ export function PeriodonticsForm({ subCategory, fields, onSubCategoryChange, onF
                       id={`${def.key}-${opt}`}
                       checked={selected.includes(opt)}
                       onCheckedChange={() => toggleMultiValue(def.key, opt)}
-                      className="border-gray-300 data-[state=checked]:bg-[#6366F1] data-[state=checked]:border-[#6366F1]"
+                      className="border-gray-300 data-[state=checked]:bg-[#40C0C3] data-[state=checked]:border-[#40C0C3]"
                     />
                     <Label htmlFor={`${def.key}-${opt}`} className="text-gray-700 cursor-pointer text-sm">
                       {opt}
@@ -222,7 +222,7 @@ export function PeriodonticsForm({ subCategory, fields, onSubCategoryChange, onF
                   onClick={() => onFieldChange(def.key, opt)}
                   className={`text-xs ${
                     currentValue === opt
-                      ? 'bg-[#6366F1] text-white border-[#6366F1] hover:bg-[#5558E3] hover:text-white'
+                      ? 'bg-[#40C0C3] text-white border-[#40C0C3] hover:bg-[#2EA6A9] hover:text-white'
                       : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'
                   }`}
                 >

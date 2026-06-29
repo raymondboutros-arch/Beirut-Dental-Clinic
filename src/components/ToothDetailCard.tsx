@@ -161,7 +161,7 @@ export function ToothDetailCard({ toothNumber, treatmentType, data, onUpdate, on
       <div className="flex items-center justify-between p-4 border-b border-gray-200">
         <button
           onClick={() => setIsExpanded(!isExpanded)}
-          className="flex items-center gap-2 text-gray-900 hover:text-[#6366F1] transition-colors"
+          className="flex items-center gap-2 text-gray-900 hover:text-[#40C0C3] transition-colors"
         >
           <span>Tooth {toothNumber}</span>
           {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
@@ -171,7 +171,7 @@ export function ToothDetailCard({ toothNumber, treatmentType, data, onUpdate, on
             variant="ghost"
             size="sm"
             onClick={() => setIsEditing(!isEditing)}
-            className="text-gray-400 hover:text-[#6366F1] hover:bg-[#6366F1]/10"
+            className="text-gray-400 hover:text-[#40C0C3] hover:bg-[#40C0C3]/10"
           >
             <Edit2 className="w-4 h-4" />
           </Button>
@@ -321,7 +321,7 @@ export function ToothDetailCard({ toothNumber, treatmentType, data, onUpdate, on
                           id={`${toothNumber}-${surface}`}
                           checked={((data as CompositeToothData).surfaces || []).includes(surface)}
                           onCheckedChange={() => handleSurfaceToggle(surface)}
-                          className="border-gray-300 data-[state=checked]:bg-[#6366F1] data-[state=checked]:border-[#6366F1]"
+                          className="border-gray-300 data-[state=checked]:bg-[#40C0C3] data-[state=checked]:border-[#40C0C3]"
                         />
                         <Label htmlFor={`${toothNumber}-${surface}`} className="text-gray-700 cursor-pointer">
                           {surface}
@@ -344,7 +344,7 @@ export function ToothDetailCard({ toothNumber, treatmentType, data, onUpdate, on
                         id={`${toothNumber}-${flag}`}
                         checked={((data as CompositeToothData).depthFlags || []).includes(flag)}
                         onCheckedChange={() => handleDepthFlagToggle(flag)}
-                        className="border-gray-300 data-[state=checked]:bg-[#6366F1] data-[state=checked]:border-[#6366F1]"
+                        className="border-gray-300 data-[state=checked]:bg-[#40C0C3] data-[state=checked]:border-[#40C0C3]"
                       />
                       <Label htmlFor={`${toothNumber}-${flag}`} className="text-gray-700 cursor-pointer">
                         {flag}
@@ -363,19 +363,19 @@ export function ToothDetailCard({ toothNumber, treatmentType, data, onUpdate, on
                 >
                   <div className="flex items-center gap-4">
                     <div className="flex items-center gap-2">
-                      <RadioGroupItem value="70" id={`${toothNumber}-70`} className="border-gray-300 text-[#6366F1]" />
+                      <RadioGroupItem value="70" id={`${toothNumber}-70`} className="border-gray-300 text-[#40C0C3]" />
                       <Label htmlFor={`${toothNumber}-70`} className="text-gray-700 cursor-pointer">
                         $70
                       </Label>
                     </div>
                     <div className="flex items-center gap-2">
-                      <RadioGroupItem value="100" id={`${toothNumber}-100`} className="border-gray-300 text-[#6366F1]" />
+                      <RadioGroupItem value="100" id={`${toothNumber}-100`} className="border-gray-300 text-[#40C0C3]" />
                       <Label htmlFor={`${toothNumber}-100`} className="text-gray-700 cursor-pointer">
                         $100
                       </Label>
                     </div>
                     <div className="flex items-center gap-2">
-                      <RadioGroupItem value="custom" id={`${toothNumber}-custom`} className="border-gray-300 text-[#6366F1]" />
+                      <RadioGroupItem value="custom" id={`${toothNumber}-custom`} className="border-gray-300 text-[#40C0C3]" />
                       <Label htmlFor={`${toothNumber}-custom`} className="text-gray-700 cursor-pointer">
                         Custom
                       </Label>
@@ -401,7 +401,7 @@ export function ToothDetailCard({ toothNumber, treatmentType, data, onUpdate, on
                     type="button"
                     variant="ghost"
                     size="sm"
-                    className="h-7 w-7 p-0 text-gray-500 hover:text-[#6366F1] hover:bg-[#6366F1]/10"
+                    className="h-7 w-7 p-0 text-gray-500 hover:text-[#40C0C3] hover:bg-[#40C0C3]/10"
                     onClick={() => {
                       // Voice recording functionality would go here
                       console.log('Voice recording activated for tooth:', toothNumber);
@@ -422,7 +422,7 @@ export function ToothDetailCard({ toothNumber, treatmentType, data, onUpdate, on
               <div className="pt-2 flex gap-2">
                 <Button
                   onClick={handleSave}
-                  className="flex-1 bg-[#6366F1] hover:bg-[#5558E3] text-white"
+                  className="flex-1 bg-[#40C0C3] hover:bg-[#2EA6A9] text-white"
                 >
                   Save
                 </Button>
@@ -507,7 +507,7 @@ export function ToothDetailCard({ toothNumber, treatmentType, data, onUpdate, on
                         id={`${toothNumber}-${flag}`}
                         checked={((data as ImplantToothData).implantFlags || []).includes(flag)}
                         onCheckedChange={() => handleImplantFlagToggle(flag)}
-                        className="border-gray-300 data-[state=checked]:bg-[#6366F1] data-[state=checked]:border-[#6366F1]"
+                        className="border-gray-300 data-[state=checked]:bg-[#40C0C3] data-[state=checked]:border-[#40C0C3]"
                       />
                       <Label htmlFor={`${toothNumber}-${flag}`} className="text-gray-700 cursor-pointer">
                         {flag}
@@ -545,19 +545,19 @@ export function ToothDetailCard({ toothNumber, treatmentType, data, onUpdate, on
                 >
                   <div className="flex items-center gap-4">
                     <div className="flex items-center gap-2">
-                      <RadioGroupItem value="300" id={`${toothNumber}-300`} className="border-gray-300 text-[#6366F1]" />
+                      <RadioGroupItem value="300" id={`${toothNumber}-300`} className="border-gray-300 text-[#40C0C3]" />
                       <Label htmlFor={`${toothNumber}-300`} className="text-gray-700 cursor-pointer">
                         $300
                       </Label>
                     </div>
                     <div className="flex items-center gap-2">
-                      <RadioGroupItem value="500" id={`${toothNumber}-500`} className="border-gray-300 text-[#6366F1]" />
+                      <RadioGroupItem value="500" id={`${toothNumber}-500`} className="border-gray-300 text-[#40C0C3]" />
                       <Label htmlFor={`${toothNumber}-500`} className="text-gray-700 cursor-pointer">
                         $500
                       </Label>
                     </div>
                     <div className="flex items-center gap-2">
-                      <RadioGroupItem value="custom" id={`${toothNumber}-custom`} className="border-gray-300 text-[#6366F1]" />
+                      <RadioGroupItem value="custom" id={`${toothNumber}-custom`} className="border-gray-300 text-[#40C0C3]" />
                       <Label htmlFor={`${toothNumber}-custom`} className="text-gray-700 cursor-pointer">
                         Custom
                       </Label>
@@ -590,7 +590,7 @@ export function ToothDetailCard({ toothNumber, treatmentType, data, onUpdate, on
               <div className="pt-2 flex gap-2">
                 <Button
                   onClick={handleSave}
-                  className="flex-1 bg-[#6366F1] hover:bg-[#5558E3] text-white"
+                  className="flex-1 bg-[#40C0C3] hover:bg-[#2EA6A9] text-white"
                 >
                   Save
                 </Button>

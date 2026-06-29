@@ -48,30 +48,30 @@ export function ServiceSelection({ onBack, onContinue }: ServiceSelectionProps) 
   };
 
   return (
-    <div className="bg-[#FAFAFA] min-h-screen flex flex-col pb-[85px]">
+    <div className="bg-[#F6F1E7] min-h-screen flex flex-col pb-[85px]">
       {/* Header */}
-      <div className="bg-white border-b border-[#D9DEE2] px-4 py-4 sticky top-0 z-10">
+      <div className="bg-white border-b border-[#E0D8C8] px-4 py-4 sticky top-0 z-10">
         <div className="relative flex items-center justify-center max-w-[430px] md:max-w-[768px] lg:max-w-[1024px] mx-auto">
           <button
             onClick={onBack}
             className="absolute left-0 p-2 -ml-2 hover:bg-gray-50 rounded-full transition-colors"
             aria-label="Go back"
           >
-            <ArrowLeft className="w-6 h-6 text-[#1C1C1C]" />
+            <ArrowLeft className="w-6 h-6 text-[#231F20]" />
           </button>
-          <h1 className="font-medium text-[19px] text-[#1C1C1C]">Select Services</h1>
+          <h1 className="font-medium text-[19px] text-[#231F20]">Select Services</h1>
         </div>
       </div>
 
       {/* Step Indicator */}
-      <div className="bg-white border-b border-[#D9DEE2] px-4 py-3">
+      <div className="bg-white border-b border-[#E0D8C8] px-4 py-3">
         <div className="max-w-[430px] md:max-w-[768px] lg:max-w-[1024px] mx-auto flex items-center gap-2">
-          <div className="flex-1 h-[3px] bg-[#1E6E97] rounded-full" />
-          <div className="flex-1 h-[3px] bg-[#D9DEE2] rounded-full" />
-          <div className="flex-1 h-[3px] bg-[#D9DEE2] rounded-full" />
-          <div className="flex-1 h-[3px] bg-[#D9DEE2] rounded-full" />
+          <div className="flex-1 h-[3px] bg-[#26C4B5] rounded-full" />
+          <div className="flex-1 h-[3px] bg-[#E0D8C8] rounded-full" />
+          <div className="flex-1 h-[3px] bg-[#E0D8C8] rounded-full" />
+          <div className="flex-1 h-[3px] bg-[#E0D8C8] rounded-full" />
         </div>
-        <p className="text-xs text-[#8AA4B1] mt-2 text-center">Step 1 of 4</p>
+        <p className="text-xs text-[#8A8378] mt-2 text-center">Step 1 of 4</p>
       </div>
 
       {/* Content */}
@@ -80,7 +80,7 @@ export function ServiceSelection({ onBack, onContinue }: ServiceSelectionProps) 
           {serviceCategories.map((category) => (
             <div key={category.title}>
               {/* Category Title */}
-              <h2 className="font-semibold text-[#1C1C1C] mb-4">
+              <h2 className="font-semibold text-[#231F20] mb-4">
                 {category.title}
               </h2>
 
@@ -90,13 +90,13 @@ export function ServiceSelection({ onBack, onContinue }: ServiceSelectionProps) 
                   <button
                     key={service.id}
                     onClick={() => setSelectedService(service.id)}
-                    className="w-full bg-white border border-[#D9DEE2] rounded-[16px] p-4 flex items-center justify-between hover:border-[#1E6E97] transition-colors"
+                    className="w-full bg-white border border-[#E0D8C8] rounded-[16px] p-4 flex items-center justify-between hover:border-[#26C4B5] transition-colors"
                   >
                     <div className="flex-1 text-left pr-4">
-                      <div className="font-medium text-[#1C1C1C] mb-1">
+                      <div className="font-medium text-[#231F20] mb-1">
                         {service.name}
                       </div>
-                      <div className="text-sm text-[#6A7279]">
+                      <div className="text-sm text-[#8A8378]">
                         {service.description}
                       </div>
                     </div>
@@ -106,8 +106,8 @@ export function ServiceSelection({ onBack, onContinue }: ServiceSelectionProps) 
                       <div
                         className={`w-6 h-6 rounded-full border-[1.5px] flex items-center justify-center transition-all ${
                           selectedService === service.id
-                            ? 'border-[#1E6E97] bg-[#1E6E97]'
-                            : 'border-[#8AA4B1] bg-white'
+                            ? 'border-[#26C4B5] bg-[#26C4B5]'
+                            : 'border-[#8A8378] bg-white'
                         }`}
                       >
                         {selectedService === service.id && (
@@ -124,15 +124,15 @@ export function ServiceSelection({ onBack, onContinue }: ServiceSelectionProps) 
       </div>
 
       {/* Bottom CTA */}
-      <div className="bg-white border-t border-[#D9DEE2] px-4 py-4 sticky bottom-[85px]">
+      <div className="bg-white border-t border-[#E0D8C8] px-4 py-4 sticky bottom-[85px]">
         <div className="max-w-[430px] md:max-w-[768px] lg:max-w-[1024px] mx-auto">
           <button
             onClick={handleContinue}
             disabled={!selectedService}
             className={`w-full py-4 rounded-[24px] font-semibold text-white transition-all ${
               selectedService
-                ? 'bg-[#1E6E97] hover:bg-[#175A7A]'
-                : 'bg-[#8AA4B1] cursor-not-allowed opacity-50'
+                ? 'bg-[#26C4B5] hover:bg-[#1FA99B]'
+                : 'bg-[#8A8378] cursor-not-allowed opacity-50'
             }`}
           >
             Continue
