@@ -191,8 +191,12 @@ export function ToothChart({ selectedTeeth, activeTooth, onToothToggle, bridgeGr
               const surfaces = surfaceMap[toothNum];
               const cx = x + width / 2;
               const cy = y + height / 2;
-              const sRo = Math.min(width, height) * 0.48;
-              const sRi = Math.min(width, height) * 0.26;
+              // Anchor to the tooth's centre (matches the numbers) and clip to an
+              // ellipse ~ the painted crown — the interactive paths are misaligned.
+              const erx = width * 0.35;
+              const ery = height * 0.35;
+              const sRi = Math.min(erx, ery) * 0.52;
+              const sRo = Math.max(erx, ery) * 1.08;
               const charted = new Set((surfaces?.[0] || '').split(''));
               const sLine = active ? 'rgba(15, 94, 96, 0.9)' : 'rgba(15, 94, 96, 0.5)';
               const sFill = 'rgba(64, 192, 195, 0.55)';
@@ -265,7 +269,7 @@ export function ToothChart({ selectedTeeth, activeTooth, onToothToggle, bridgeGr
                   {surfaces && surfaces.length > 0 && (
                     <>
                       <clipPath id={`tc-${toothNum}`}>
-                        <path d={toothData_entry.path} transform={`translate(${x}, ${y}) scale(${scaleX}, ${scaleY})`} />
+                        <ellipse cx={cx} cy={cy} rx={erx} ry={ery} />
                       </clipPath>
                       <g clipPath={`url(#tc-${toothNum})`}>
                         {SURFACE_ZONES.map((z) =>

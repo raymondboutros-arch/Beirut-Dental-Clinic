@@ -278,6 +278,15 @@ export function ToothDetailPage({
     }
   };
 
+  // Cavity classes valid for this tooth (G.V. Black): anterior teeth (positions
+  // 1-3) take III/IV/V; posterior teeth (4-8) take I/II/V.
+  const getAvailableClasses = (toothNum: number): string[] => {
+    const pos = toothNum % 10;
+    return pos >= 1 && pos <= 3
+      ? ['Class III', 'Class IV', 'Class V']
+      : ['Class I', 'Class II', 'Class V'];
+  };
+
   // Implant specific data
   const implantSystems = ['Tissue Level (RN)', 'Tissue Level (WN)', 'BLT', 'BLC', 'TLC', 'BLX', 'TLX'];
   const depthFlags = ['Pulp exposed', 'Very deep', 'Monitor in 6 months'];
@@ -763,11 +772,9 @@ export function ToothDetailPage({
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="bg-white border-gray-200">
-                  <SelectItem value="Class I">Class I</SelectItem>
-                  <SelectItem value="Class II">Class II</SelectItem>
-                  <SelectItem value="Class III">Class III</SelectItem>
-                  <SelectItem value="Class IV">Class IV</SelectItem>
-                  <SelectItem value="Class V">Class V</SelectItem>
+                  {getAvailableClasses(toothNumber).map((cls) => (
+                    <SelectItem key={cls} value={cls}>{cls}</SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
