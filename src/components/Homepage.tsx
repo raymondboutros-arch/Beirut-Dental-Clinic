@@ -49,7 +49,7 @@ function Depth3Frame({ onClick }: { onClick?: () => void }) {
 
 function Depth2Frame({ onClick }: { onClick?: () => void }) {
   return (
-    <div className="absolute box-border content-stretch flex items-start left-1/2 px-[16px] py-[12px] bottom-[120px] sm:bottom-[140px] translate-x-[-50%] w-full max-w-[390px] z-10" data-name="Depth 2, Frame 4">
+    <div className="absolute box-border content-stretch flex items-start left-1/2 px-[16px] py-[12px] bottom-[96px] sm:bottom-[120px] translate-x-[-50%] w-full max-w-[390px] z-10" data-name="Depth 2, Frame 4">
       <Depth3Frame onClick={onClick} />
     </div>
   );
@@ -87,8 +87,8 @@ export function Homepage({ onEnterDashboard }: HomepageProps) {
   }, [currentSlide, goToSlide]);
 
   return (
-    <div className="bg-black relative w-full min-h-screen flex items-center justify-center pb-[100px]" data-name="iPhone 14 & 15 Pro Max - 51">
-      <div className="relative w-full h-full min-h-screen overflow-hidden">
+    <div className="bg-black relative w-full h-dvh overflow-hidden" data-name="iPhone 14 & 15 Pro Max - 51">
+      <div className="relative w-full h-full overflow-hidden">
 
         {/* Slides */}
         {slides.map((slide, index) => (
@@ -117,7 +117,7 @@ export function Homepage({ onEnterDashboard }: HomepageProps) {
         </div>
 
         {/* Dot Indicators */}
-        <div className="absolute bottom-[170px] left-0 right-0 z-10 flex items-center justify-center gap-2">
+        <div className="absolute bottom-[152px] sm:bottom-[176px] left-0 right-0 z-10 flex items-center justify-center gap-2">
           {slides.map((_, index) => (
             <button
               key={index}

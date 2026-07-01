@@ -735,7 +735,7 @@ export default function App() {
   };
 
   return (
-    <div className="max-w-[430px] md:max-w-[768px] lg:max-w-[1024px] mx-auto min-h-screen bg-[#F6F1E7] relative shadow-2xl">
+    <div className="max-w-[430px] md:max-w-[768px] lg:max-w-[1024px] mx-auto min-h-dvh bg-[#F6F1E7] relative shadow-2xl">
       {renderContent()}
       <BottomNavigation activeTab={activeTab} onTabChange={handleTabChange} />
       <Toaster />
