@@ -93,6 +93,9 @@ export function MenuScreen({ onNavigate }: MenuScreenProps) {
           </div>
           <span className="flex-1 text-left font-medium text-red-600">Sign Out</span>
         </button>
+
+        {/* Build stamp — confirms which version a device is running */}
+        <p className="text-center text-[11px] text-[#8A8378] pt-1 pb-2">Beirut Dental Clinic · v1.7</p>
       </div>
     </div>
   );
