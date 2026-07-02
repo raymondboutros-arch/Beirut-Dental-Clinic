@@ -264,20 +264,25 @@ export function ToothChart({ selectedTeeth, activeTooth, onToothToggle, bridgeGr
                   </g>
                   {surfaces && surfaces.length > 0 && (
                     <>
-                      <clipPath id={`tc-${toothNum}`}>
-                        <path d={toothData_entry.path} transform={`translate(${x}, ${y}) scale(${scaleX}, ${scaleY})`} />
+                      {/* iOS Safari ignores transforms on clipPath children, so the clip
+                          shape stays untransformed and the clipped group carries the
+                          transform instead (inner group inverts it for chart coords). */}
+                      <clipPath id={`tc-${toothNum}`} clipPathUnits="userSpaceOnUse">
+                        <path d={toothData_entry.path} />
                       </clipPath>
-                      <g clipPath={`url(#tc-${toothNum})`}>
-                        {SURFACE_ZONES.map((z) =>
-                          charted.has(z.l) ? (
-                            <path key={z.l} d={wedgePath(cx, cy, z.a0, z.a1, sRi, sRo)} fill={sFill} />
-                          ) : null
-                        )}
-                        {[45, 135, 225, 315].map((deg) => {
-                          const [xi, yi] = polarPt(cx, cy, sRi, deg);
-                          const [xo, yo] = polarPt(cx, cy, sRo, deg);
-                          return <path key={deg} d={`M${xi} ${yi}L${xo} ${yo}`} stroke={sLine} strokeWidth={0.3} fill="none" />;
-                        })}
+                      <g transform={`translate(${x}, ${y}) scale(${scaleX}, ${scaleY})`} clipPath={`url(#tc-${toothNum})`}>
+                        <g transform={`scale(${1 / scaleX}, ${1 / scaleY}) translate(${-x}, ${-y})`}>
+                          {SURFACE_ZONES.map((z) =>
+                            charted.has(z.l) ? (
+                              <path key={z.l} d={wedgePath(cx, cy, z.a0, z.a1, sRi, sRo)} fill={sFill} />
+                            ) : null
+                          )}
+                          {[45, 135, 225, 315].map((deg) => {
+                            const [xi, yi] = polarPt(cx, cy, sRi, deg);
+                            const [xo, yo] = polarPt(cx, cy, sRo, deg);
+                            return <path key={deg} d={`M${xi} ${yi}L${xo} ${yo}`} stroke={sLine} strokeWidth={0.3} fill="none" />;
+                          })}
+                        </g>
                       </g>
                       <circle cx={cx} cy={cy} r={sRi} fill={charted.has('O') ? sFill : 'none'} stroke={sLine} strokeWidth={0.3} />
                     </>
