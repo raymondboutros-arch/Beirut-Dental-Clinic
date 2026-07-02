@@ -1,15 +1,6 @@
 import Frame from '../imports/Frame';
 import svgPaths from '../imports/svg-81glllw5g3';
 // Surface-diagram geometry (drawn in the chart's 93x153 space, clipped per tooth)
-// Per-tooth-type nudge to move the diagram onto the visible crown (each tooth's
-// box includes the gum-covered root). Anterior teeth need the most, molars least.
-const crownNudgeFactor = (toothNum: number): number => {
-  const pos = toothNum % 10;
-  if (pos <= 3) return 0.16; // incisors + canines
-  if (pos <= 5) return 0.09; // premolars
-  return 0.05; // molars
-};
-
 const SURFACE_ZONES = [
   { l: 'B', a0: -45, a1: 45 },
   { l: 'D', a0: 45, a1: 135 },
@@ -199,16 +190,9 @@ export function ToothChart({ selectedTeeth, activeTooth, onToothToggle, bridgeGr
               // Per-tooth surface diagram, clipped to the real tooth shape
               const surfaces = surfaceMap[toothNum];
               const cx = x + width / 2;
-              // The per-tooth box includes the gum-covered root, so the painted crown
-              // sits below (upper arch) / above (lower arch) the box centre. Nudge to it.
-              const crownNudge = height * crownNudgeFactor(toothNum) * (isUpperTooth(toothNum) ? 1 : -1);
-              const cy = y + height / 2 + crownNudge;
-              // Anchor to the tooth's centre (matches the numbers) and clip to an
-              // ellipse ~ the painted crown — the interactive paths are misaligned.
-              const erx = width * 0.28;
-              const ery = height * 0.28;
-              const sRi = Math.min(erx, ery) * 0.52;
-              const sRo = Math.max(erx, ery) * 1.08;
+              const cy = y + height / 2;
+              const sRo = Math.min(width, height) * 0.52;
+              const sRi = Math.min(width, height) * 0.28;
               const charted = new Set((surfaces?.[0] || '').split(''));
               const sLine = active ? 'rgba(15, 94, 96, 0.9)' : 'rgba(15, 94, 96, 0.5)';
               const sFill = 'rgba(64, 192, 195, 0.55)';
@@ -281,7 +265,7 @@ export function ToothChart({ selectedTeeth, activeTooth, onToothToggle, bridgeGr
                   {surfaces && surfaces.length > 0 && (
                     <>
                       <clipPath id={`tc-${toothNum}`}>
-                        <ellipse cx={cx} cy={cy} rx={erx} ry={ery} />
+                        <path d={toothData_entry.path} transform={`translate(${x}, ${y}) scale(${scaleX}, ${scaleY})`} />
                       </clipPath>
                       <g clipPath={`url(#tc-${toothNum})`}>
                         {SURFACE_ZONES.map((z) =>
@@ -335,14 +319,13 @@ export function ToothChart({ selectedTeeth, activeTooth, onToothToggle, bridgeGr
 
               // Treated teeth: number sits over the surface diagram (drawn in the SVG layer)
               if (surfaces && surfaces.length > 0) {
-                const crownTop = top + (100 - inset.top - inset.bottom) * crownNudgeFactor(toothNum) * (isUpperTooth(toothNum) ? 1 : -1);
                 return (
                   <div
                     key={`label-${toothNum}`}
                     className="absolute flex items-center justify-center"
                     style={{
                       left: `${left}%`,
-                      top: `${crownTop}%`,
+                      top: `${top}%`,
                       transform: 'translate(-50%, -50%)',
                     }}
                   >
