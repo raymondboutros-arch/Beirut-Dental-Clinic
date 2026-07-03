@@ -21,6 +21,29 @@ const wedgePath = (cx: number, cy: number, a0: number, a1: number, ri: number, r
   return `M${x0o} ${y0o}A${ro} ${ro} 0 0 1 ${x1o} ${y1o}L${x1i} ${y1i}A${ri} ${ri} 0 0 0 ${x0i} ${y0i}Z`;
 };
 
+// Bake translate+scale into absolute M/C/L/H/V/Z path data so the clip shape
+// needs no transforms — iOS Safari resolves transform-dependent clips lazily on
+// first paint (correct only after a rotate/resize forces relayout).
+const bakedClipCache: Record<number, string> = {};
+const bakeToothPath = (toothNum: number, d: string, sx: number, sy: number, tx: number, ty: number): string => {
+  if (bakedClipCache[toothNum]) return bakedClipCache[toothNum];
+  const toks = d.match(/[A-Za-z]|-?(?:\d+\.?\d*|\.\d+)(?:[eE]-?\d+)?/g) || [];
+  let out = '';
+  let i = 0;
+  let cmd = '';
+  const num = () => parseFloat(toks[i++]);
+  while (i < toks.length) {
+    if (/^[A-Za-z]$/.test(toks[i])) cmd = toks[i++];
+    out += cmd;
+    if (cmd === 'M' || cmd === 'L') out += `${num() * sx + tx} ${num() * sy + ty}`;
+    else if (cmd === 'C') { for (let k = 0; k < 3; k++) out += `${num() * sx + tx} ${num() * sy + ty}${k < 2 ? ' ' : ''}`; }
+    else if (cmd === 'H') out += `${num() * sx + tx}`;
+    else if (cmd === 'V') out += `${num() * sy + ty}`;
+  }
+  bakedClipCache[toothNum] = out;
+  return out;
+};
+
 interface BridgeGroup {
   id: string;
   teeth: { toothNumber: number; role: 'abutment' | 'pontic'; treatmentId: string }[];
@@ -154,7 +177,7 @@ export function ToothChart({ selectedTeeth, activeTooth, onToothToggle, bridgeGr
           <svg
             className="absolute inset-0 w-full h-full pointer-events-none"
             viewBox="0 0 93 153"
-            preserveAspectRatio="xMidYMid meet"
+            preserveAspectRatio="none"
           >
             {/* SVG defs for pontic pattern */}
             <defs>
@@ -264,25 +287,22 @@ export function ToothChart({ selectedTeeth, activeTooth, onToothToggle, bridgeGr
                   </g>
                   {surfaces && surfaces.length > 0 && (
                     <>
-                      {/* iOS Safari ignores transforms on clipPath children, so the clip
-                          shape stays untransformed and the clipped group carries the
-                          transform instead (inner group inverts it for chart coords). */}
+                      {/* Clip coordinates are pre-baked into the path data: no transforms
+                          anywhere near the clipPath (see bakeToothPath). */}
                       <clipPath id={`tc-${toothNum}`} clipPathUnits="userSpaceOnUse">
-                        <path d={toothData_entry.path} />
+                        <path d={bakeToothPath(toothNum, toothData_entry.path, scaleX, scaleY, x, y)} />
                       </clipPath>
-                      <g transform={`translate(${x}, ${y}) scale(${scaleX}, ${scaleY})`} clipPath={`url(#tc-${toothNum})`}>
-                        <g transform={`scale(${1 / scaleX}, ${1 / scaleY}) translate(${-x}, ${-y})`}>
-                          {SURFACE_ZONES.map((z) =>
-                            charted.has(z.l) ? (
-                              <path key={z.l} d={wedgePath(cx, cy, z.a0, z.a1, sRi, sRo)} fill={sFill} />
-                            ) : null
-                          )}
-                          {[45, 135, 225, 315].map((deg) => {
-                            const [xi, yi] = polarPt(cx, cy, sRi, deg);
-                            const [xo, yo] = polarPt(cx, cy, sRo, deg);
-                            return <path key={deg} d={`M${xi} ${yi}L${xo} ${yo}`} stroke={sLine} strokeWidth={0.3} fill="none" />;
-                          })}
-                        </g>
+                      <g clipPath={`url(#tc-${toothNum})`}>
+                        {SURFACE_ZONES.map((z) =>
+                          charted.has(z.l) ? (
+                            <path key={z.l} d={wedgePath(cx, cy, z.a0, z.a1, sRi, sRo)} fill={sFill} />
+                          ) : null
+                        )}
+                        {[45, 135, 225, 315].map((deg) => {
+                          const [xi, yi] = polarPt(cx, cy, sRi, deg);
+                          const [xo, yo] = polarPt(cx, cy, sRo, deg);
+                          return <path key={deg} d={`M${xi} ${yi}L${xo} ${yo}`} stroke={sLine} strokeWidth={0.3} fill="none" />;
+                        })}
                       </g>
                       <circle cx={cx} cy={cy} r={sRi} fill={charted.has('O') ? sFill : 'none'} stroke={sLine} strokeWidth={0.3} />
                     </>
