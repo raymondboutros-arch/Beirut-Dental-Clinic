@@ -116,19 +116,21 @@ export function Homepage({ onEnterDashboard }: HomepageProps) {
           
         </div>
 
-        {/* Dot Indicators */}
-        <div className="absolute bottom-[152px] sm:bottom-[176px] left-0 right-0 z-10 flex items-center justify-center gap-2">
+        {/* Slide indicators — thin lines, kept clear of the CTA below */}
+        <div className="absolute bottom-[172px] sm:bottom-[200px] left-0 right-0 z-10 flex items-center justify-center gap-1.5">
           {slides.map((_, index) => (
             <button
               key={index}
               onClick={() => goToSlide(index)}
-              className={`rounded-full transition-all duration-300 ${
-                currentSlide === index
-                  ? 'w-7 h-2.5 bg-white'
-                  : 'w-2.5 h-2.5 bg-white/40 hover:bg-white/60'
-              }`}
+              className="py-2 cursor-pointer"
               aria-label={`Go to slide ${index + 1}`}
-            />
+            >
+              <span
+                className={`block h-[3px] rounded-full transition-all duration-300 ${
+                  currentSlide === index ? 'w-7 bg-white' : 'w-3 bg-white/40 hover:bg-white/60'
+                }`}
+              />
+            </button>
           ))}
         </div>
 

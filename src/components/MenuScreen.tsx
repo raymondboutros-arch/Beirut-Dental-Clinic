@@ -95,7 +95,7 @@ export function MenuScreen({ onNavigate }: MenuScreenProps) {
         </button>
 
         {/* Build stamp — confirms which version a device is running */}
-        <p className="text-center text-[11px] text-[#8A8378] pt-1 pb-2">Beirut Dental Clinic · v1.8</p>
+        <p className="text-center text-[11px] text-[#8A8378] pt-1 pb-2">Beirut Dental Clinic · v1.9</p>
       </div>
     </div>
   );

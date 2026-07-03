@@ -21,6 +21,11 @@ const wedgePath = (cx: number, cy: number, a0: number, a1: number, ri: number, r
   return `M${x0o} ${y0o}A${ro} ${ro} 0 0 1 ${x1o} ${y1o}L${x1i} ${y1i}A${ri} ${ri} 0 0 0 ${x0i} ${y0i}Z`;
 };
 
+// Shrink factor applied to each tooth's clip shape (toward the tooth centre) so
+// the surface wedges stop just inside the painted rim rather than at the exact
+// path edge.
+const CROWN_INSET = 0.92;
+
 // Bake translate+scale into absolute M/C/L/H/V/Z path data so the clip shape
 // needs no transforms — iOS Safari resolves transform-dependent clips lazily on
 // first paint (correct only after a rotate/resize forces relayout).
@@ -288,9 +293,11 @@ export function ToothChart({ selectedTeeth, activeTooth, onToothToggle, bridgeGr
                   {surfaces && surfaces.length > 0 && (
                     <>
                       {/* Clip coordinates are pre-baked into the path data: no transforms
-                          anywhere near the clipPath (see bakeToothPath). */}
+                          anywhere near the clipPath (see bakeToothPath). The clip is shrunk
+                          slightly toward the tooth centre (CROWN_INSET) so wedges terminate
+                          inside the painted rim instead of at the mathematical edge. */}
                       <clipPath id={`tc-${toothNum}`} clipPathUnits="userSpaceOnUse">
-                        <path d={bakeToothPath(toothNum, toothData_entry.path, scaleX, scaleY, x, y)} />
+                        <path d={bakeToothPath(toothNum, toothData_entry.path, scaleX * CROWN_INSET, scaleY * CROWN_INSET, CROWN_INSET * x + (1 - CROWN_INSET) * cx, CROWN_INSET * y + (1 - CROWN_INSET) * cy)} />
                       </clipPath>
                       <g clipPath={`url(#tc-${toothNum})`}>
                         {SURFACE_ZONES.map((z) =>
